@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<PluginConfig>
+    <SupportURL>https://forums.indigodomo.com/viewforum.php?f=66</SupportURL>
+    <Field id="description" type="label">
+        <Label>This Plugin interprets Z-Wave messages sent and received by Indigo. 😄</Label>
+    </Field>
+    <Field id="copyright" type="label">
+        <Label>Copyright © 2021 Autolog</Label>
+    </Field>
+
+	<Field id="space_1" type="label" alwaysUseInDialogHeightCalc="true"><Label/></Field>
+
+    <Field id="separator_1" type="separator" alwaysUseInDialogHeightCalc="true"/>
+
+    <Field id="header_1" type="label" alwaysUseInDialogHeightCalc="true" fontColor="green">
+        <Label>DEBUG LOGGING</Label>
+    </Field>
+
+	<Field id="space_2" type="label" alwaysUseInDialogHeightCalc="true"><Label/></Field>
+
+	<Field id="indigoEventLogDebug" type="checkbox" defaultValue="false" alwaysUseInDialogHeightCalc="true">
+		<Label>Indigo Event Log:</Label>
+		<Description>Output debug messages to Indigo Event Log</Description>
+	</Field>
+
+	<Field id="space_3" type="label" alwaysUseInDialogHeightCalc="true"><Label/></Field>
+
+	<Field id="pluginLogDebug" type="checkbox" defaultValue="false" alwaysUseInDialogHeightCalc="true">
+		<Label>Plugin Log:</Label>
+		<Description>Output debug messages to Plugin Log</Description>
+	</Field>
+
+	<Field id="space_4" type="label" alwaysUseInDialogHeightCalc="true"><Label/></Field>
+
+	<Field id="eventLogLevel" type="menu" defaultValue="20" hidden="true">
+		<Label>Logging Level - Indigo Event Log:</Label>
+		<List>
+			<Option value="5">Debug Logging</Option>
+			<Option value="10">Z-Wave Logging [Default]</Option>
+			<Option value="20">No Z-Wave Logging</Option>
+		</List>
+	</Field>
+
+	<Field id="pluginLogLevel" type="menu" defaultValue="20" hidden="true">
+		<Label>Logging Level - Plugin Event Log:</Label>
+		<List>
+			<Option value="5">Debug Logging</Option>
+			<Option value="10">Z-Wave Logging [Default]</Option>
+			<Option value="20">No Z-Wave Logging</Option>
+		</List>
+	</Field>
+
+</PluginConfig>

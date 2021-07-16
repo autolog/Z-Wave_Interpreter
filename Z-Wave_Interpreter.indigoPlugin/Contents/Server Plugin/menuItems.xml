@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<MenuItems>
+	<MenuItem id="zwaveInterpretations">
+		<Name>Select Devices to Interpret… </Name>
+		<ConfigUI>
+			<Field id="space_01" type="label" alwaysUseInDialogHeightCalc="true"><Label/></Field>
+
+            <Field id="separator_1" type="separator" alwaysUseInDialogHeightCalc="true"/>
+
+            <Field id="header_1" type="label" alwaysUseInDialogHeightCalc="true" fontColor="green">
+                <Label>Z-WAVE LOGGING</Label>
+            </Field>
+			<Field id="space_02" type="label" alwaysUseInDialogHeightCalc="true"><Label/></Field>
+
+            <Field id="zwaveLogToIndigoEventLogOption" type="checkbox" defaultValue="false" alwaysUseInDialogHeightCalc="true">
+                <Label>Indigo Event Log:</Label>
+                <Description>Log to Indigo Event Log</Description>
+                <CallbackMethod>setZwaveLogToIndigoEventLogOption</CallbackMethod>
+            </Field>
+			<Field id="space_03" type="label" alwaysUseInDialogHeightCalc="true"><Label/></Field>
+
+            <Field id="zwaveLogToPluginLogOption" type="checkbox" defaultValue="false" alwaysUseInDialogHeightCalc="true">
+                <Label>Plugin Log File</Label>
+                 <Description>Log to Plugin Log File</Description>
+                <CallbackMethod>setZwaveLogToPluginLogOption</CallbackMethod>
+            </Field>
+            <Field id="space_04" type="label" alwaysUseInDialogHeightCalc="true"><Label/></Field>
+
+            <Field id="zwaveLogToStandAloneFileOption" type="checkbox" defaultValue="false" alwaysUseInDialogHeightCalc="true">
+                <Label>Stand-Alone Log:</Label>
+                <Description>Log to Stand-Alone Log File</Description>
+                <CallbackMethod>setZwaveLogToStandAloneLogOption</CallbackMethod>
+            </Field>
+
+            <Field id="space_05" type="label" visibleBindingId="zwaveLogToStandAloneFileOption" visibleBindingValue="true"><Label/></Field>
+
+            <Field id="standAloneZwaveLogFolderPath" type="textfield" defaultValue=""
+                   tooltip="Enter path for stand-alone Z-Wave log" visibleBindingId="zwaveLogToStandAloneFileOption" visibleBindingValue="true">
+                <Label>Folder Path:</Label>
+                <CallbackMethod>setZwaveLogToStandAloneLogFolderPath</CallbackMethod>
+            </Field>
+
+            <Field id="help_1" type="label" alignWithControl="true" visibleBindingId="zwaveLogToStandAloneFileOption" visibleBindingValue="true">
+                <Label>^ Default location is to the 'zwave_log' folder in the plugin log folder. To save log in an alternate location, e.g. the Documents folder, specify: "~/Documents" [No Quotes].</Label>
+            </Field>
+
+            <Field id="space_06" type="label" visibleBindingId="zwaveLogToStandAloneFileOption" visibleBindingValue="true"><Label/></Field>
+            <Field id="standAloneZwaveLogFileName" type="textfield" tooltip="Enter file name for stand-alone Z-Wave log" visibleBindingId="zwaveLogToStandAloneFileOption" visibleBindingValue="true">
+                <Label>File Name:</Label>
+                <CallbackMethod>setZwaveLogToStandAloneLogFileName</CallbackMethod>
+            </Field>
+
+            <Field id="space_07" type="label" alwaysUseInDialogHeightCalc="true"><Label/></Field>
+
+
+            <Field id="separator_2" type="separator" alwaysUseInDialogHeightCalc="true"/>
+
+            <Field id="header_2" type="label" alwaysUseInDialogHeightCalc="true" fontColor="green">
+                <Label>INTERPRETATION</Label>
+            </Field>
+			<Field id="space_08" type="label" alwaysUseInDialogHeightCalc="true"><Label/></Field>
+
+            <Field id="zwaveInterpretationMode" type="menu" default="S" dynamicReload="true"
+                   tooltip="Select to interpret all Z-Wave devices or a selection" alwaysUseInDialogHeightCalc="true">
+                <Label>Interpretation Mode:</Label>
+                <List>
+                    <Option value="A">All Z-Wave Devices</Option>
+                    <Option value="S">Selected Z-Wave Devices Only</Option>
+                </List>
+                <CallbackMethod>evaluateZwaveInterpretationMode</CallbackMethod>
+            </Field>
+			<Field id="space_09" type="label" alwaysUseInDialogHeightCalc="true"><Label/></Field>
+
+            <Field id="available_zwave_devices_list" type="list" rows="8" visibleBindingId="zwaveInterpretationMode" visibleBindingValue="S" alwaysUseInDialogHeightCalc="true">
+	            <Label>Z-Wave Devices:</Label>
+	            <List class="self" method="build_available_zwave_devices_list" dynamicReload="true"/>
+            </Field>
+            <Field id="add_interpreted_zwave_devices" type="button" visibleBindingId="zwaveInterpretationMode" visibleBindingValue="S" alwaysUseInDialogHeightCalc="true">
+                <Label/>
+                <Title>Interpret Z-Wave Device(s)</Title>
+                <CallbackMethod>add_interpreted_zwave_devices</CallbackMethod>
+            </Field>
+            <Field id="help_2" type="label" alignWithControl="true" visibleBindingId="zwaveInterpretationMode" visibleBindingValue="S" alwaysUseInDialogHeightCalc="true">
+                <Label>^ Select the Z-Wave device(s) and then click Add to add the selected Z-Wave device(s) to the list of Z-Wave devices to be interpreted.</Label>
+            </Field>
+
+            <Field id="space_10" type="label" alwaysUseInDialogHeightCalc="true"><Label/></Field>
+
+            <Field id="interpreted_zwave_devices_list" type="list" rows="8" visibleBindingId="zwaveInterpretationMode" visibleBindingValue="S" alwaysUseInDialogHeightCalc="true">
+                <Label>Interpreted Devices:</Label>
+                <List class="self" method="build_interpreted_zwave_devices_list" dynamicReload="true"/>
+            </Field>
+            <Field id="remove_interpreted_zwave_devices" type="button" visibleBindingId="zwaveInterpretationMode" visibleBindingValue="S" alwaysUseInDialogHeightCalc="true">
+                <Label/>
+                <Title>Remove Z-wave Devices</Title>
+                <CallbackMethod>remove_interpreted_zwave_devices</CallbackMethod>
+            </Field>
+            <Field id="help_3" type="label" alignWithControl="true" visibleBindingId="zwaveInterpretationMode" visibleBindingValue="S" alwaysUseInDialogHeightCalc="true">
+                <Label>^ Click to remove the selected Z-Wave device(s) from the list of Z-Wave devices to be interpreted.</Label>
+            </Field>
+		</ConfigUI>
+	</MenuItem>
+</MenuItems>
