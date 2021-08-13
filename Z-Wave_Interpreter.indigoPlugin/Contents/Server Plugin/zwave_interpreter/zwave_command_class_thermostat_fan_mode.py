@@ -134,7 +134,7 @@ class ZwaveThermostatFanMode:
                                                             .format(self.zw_interpretation[ZW_COMMAND_CLASS_UI],
                                                                     self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI],
                                                                     self.zw_interpretation[ZW_COMMAND_UI],
-                                                                    self.zw_interpretation[ZW_MODE_UI]))
+                                                                    self.zw_interpretation[ZW_FAN_MODE_UI]))
 
             self.zw_interpretation[ZW_INTERPRETED] = True
 

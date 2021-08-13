@@ -11,7 +11,6 @@ from .zwave_constants_interpretation import *
 from .zwave_constants_command_classes import *
 
 
-ZW_THERMOSTAT_OPERATING_STATE = 0x43
 ZW_THERMOSTAT_OPERATING_STATE_LOGGING_SUPPORTED_GET = 0x01
 ZW_THERMOSTAT_OPERATING_STATE_GET = 0x02
 ZW_THERMOSTAT_OPERATING_STATE_REPORT = 0x03
