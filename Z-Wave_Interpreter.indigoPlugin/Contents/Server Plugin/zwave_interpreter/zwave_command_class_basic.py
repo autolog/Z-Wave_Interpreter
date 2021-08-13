@@ -43,6 +43,7 @@ class ZwaveBasicCommand:
         try:
             if self.zw_interpretation[ZW_COMMAND] == ZW_BASIC_COMMAND_SET:
                 self._interpret_set()
+                return
             elif self.zw_interpretation[ZW_COMMAND] == ZW_BASIC_COMMAND_GET:
                 pass
             elif self.zw_interpretation[ZW_COMMAND] == ZW_BASIC_COMMAND_REPORT:

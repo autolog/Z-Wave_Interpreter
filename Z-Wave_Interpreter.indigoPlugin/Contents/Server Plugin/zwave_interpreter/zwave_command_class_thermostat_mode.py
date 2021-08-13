@@ -57,24 +57,24 @@ class ZwaveThermostatMode:
             self.command_classes[ZW_THERMOSTAT_MODE][ZW_COMMANDS][ZW_THERMOSTAT_MODE_SUPPORTED_GET] = u"Supported Get"
             self.command_classes[ZW_THERMOSTAT_MODE][ZW_COMMANDS][ZW_THERMOSTAT_MODE_SUPPORTED_REPORT] = u"Supported Report"
 
-            self.zw_thermostat_mode = dict()
-            self.zw_thermostat_mode[ZW_THERMOSTAT_MODE_OFF] = u"Off"
-            self.zw_thermostat_mode[ZW_THERMOSTAT_MODE_HEAT] = u"Heat"
-            self.zw_thermostat_mode[ZW_THERMOSTAT_MODE_COOL] = u"Cool"
-            self.zw_thermostat_mode[ZW_THERMOSTAT_MODE_AUTO] = u"Auto"
-            self.zw_thermostat_mode[ZW_THERMOSTAT_MODE_AUXILIARY] = u"Auxiliary"
-            self.zw_thermostat_mode[ZW_THERMOSTAT_MODE_RESUME_ON] = u"Resume [On]"
-            self.zw_thermostat_mode[ZW_THERMOSTAT_MODE_FAN] = u"Fan"
-            self.zw_thermostat_mode[ZW_THERMOSTAT_MODE_FURNACE] = u"Furnace"
-            self.zw_thermostat_mode[ZW_THERMOSTAT_MODE_DRY] = u"Dry"
-            self.zw_thermostat_mode[ZW_THERMOSTAT_MODE_MOIST] = u"Moist"
-            self.zw_thermostat_mode[ZW_THERMOSTAT_MODE_AUTO_CHANGEOVER] = u"Auto Changeover"
-            self.zw_thermostat_mode[ZW_THERMOSTAT_MODE_ENERGY_HEAT] = u"Energy Heat"
-            self.zw_thermostat_mode[ZW_THERMOSTAT_MODE_ENERGY_COOL] = u"Energy Cool"
-            self.zw_thermostat_mode[ZW_THERMOSTAT_MODE_AWAY] = u"Away"
-            self.zw_thermostat_mode[ZW_THERMOSTAT_MODE_RESERVED] = u"Reserved"
-            self.zw_thermostat_mode[ZW_THERMOSTAT_MODE_FULL_POWER] = u"Full Power"
-            self.zw_thermostat_mode[ZW_THERMOSTAT_MODE_MANUFACTURER_SPECIFIC] = u"Manufacturer Specific"
+            self.zw_thermostat_modes = dict()
+            self.zw_thermostat_modes[ZW_THERMOSTAT_MODE_OFF] = u"Off"
+            self.zw_thermostat_modes[ZW_THERMOSTAT_MODE_HEAT] = u"Heat"
+            self.zw_thermostat_modes[ZW_THERMOSTAT_MODE_COOL] = u"Cool"
+            self.zw_thermostat_modes[ZW_THERMOSTAT_MODE_AUTO] = u"Auto"
+            self.zw_thermostat_modes[ZW_THERMOSTAT_MODE_AUXILIARY] = u"Auxiliary"
+            self.zw_thermostat_modes[ZW_THERMOSTAT_MODE_RESUME_ON] = u"Resume [On]"
+            self.zw_thermostat_modes[ZW_THERMOSTAT_MODE_FAN] = u"Fan"
+            self.zw_thermostat_modes[ZW_THERMOSTAT_MODE_FURNACE] = u"Furnace"
+            self.zw_thermostat_modes[ZW_THERMOSTAT_MODE_DRY] = u"Dry"
+            self.zw_thermostat_modes[ZW_THERMOSTAT_MODE_MOIST] = u"Moist"
+            self.zw_thermostat_modes[ZW_THERMOSTAT_MODE_AUTO_CHANGEOVER] = u"Auto Changeover"
+            self.zw_thermostat_modes[ZW_THERMOSTAT_MODE_ENERGY_HEAT] = u"Energy Heat"
+            self.zw_thermostat_modes[ZW_THERMOSTAT_MODE_ENERGY_COOL] = u"Energy Cool"
+            self.zw_thermostat_modes[ZW_THERMOSTAT_MODE_AWAY] = u"Away"
+            self.zw_thermostat_modes[ZW_THERMOSTAT_MODE_RESERVED] = u"Reserved"
+            self.zw_thermostat_modes[ZW_THERMOSTAT_MODE_FULL_POWER] = u"Full Power"
+            self.zw_thermostat_modes[ZW_THERMOSTAT_MODE_MANUFACTURER_SPECIFIC] = u"Manufacturer Specific"
 
         except StandardError as standard_error_message:
             result_message = u"Error detected in 'ZwaveThermostatMode' Class, '__init__' method"
@@ -86,7 +86,7 @@ class ZwaveThermostatMode:
                 self._interpret_set()
                 return
             elif self.zw_interpretation[ZW_COMMAND] == ZW_THERMOSTAT_MODE_GET:
-                self._interpret_set()
+                self._interpret_get()
                 return
             elif self.zw_interpretation[ZW_COMMAND] == ZW_THERMOSTAT_MODE_REPORT:
                 self._interpret_report()
@@ -108,7 +108,7 @@ class ZwaveThermostatMode:
             mode = self.zw_interpretation[ZW_COMMAND_DETAIL][0] & 0B00011111
             number_of_manufacturer_fields, manufacturer_fields = self._manufacturer_fields(mode)
             self.zw_interpretation[ZW_MODE] = mode
-            self.zw_interpretation[ZW_MODE_UI] = self.zw_thermostat_mode[mode]
+            self.zw_interpretation[ZW_MODE_UI] = self.zw_thermostat_modes[mode]
             self.zw_interpretation[ZW_NUMBER_OF_MANUFACTURER_FIELDS] = number_of_manufacturer_fields
             self.zw_interpretation[ZW_MANUFACTURER_FIELDS] = manufacturer_fields
 
@@ -142,7 +142,7 @@ class ZwaveThermostatMode:
             mode = self.zw_interpretation[ZW_COMMAND_DETAIL][0] & 0B00011111
             number_of_manufacturer_fields, manufacturer_fields = self._manufacturer_fields(mode)
             self.zw_interpretation[ZW_MODE] = mode
-            self.zw_interpretation[ZW_MODE_UI] = self.zw_thermostat_mode[mode]
+            self.zw_interpretation[ZW_MODE_UI] = self.zw_thermostat_modes[mode]
             self.zw_interpretation[ZW_NUMBER_OF_MANUFACTURER_FIELDS] = number_of_manufacturer_fields
             self.zw_interpretation[ZW_MANUFACTURER_FIELDS] = manufacturer_fields
 

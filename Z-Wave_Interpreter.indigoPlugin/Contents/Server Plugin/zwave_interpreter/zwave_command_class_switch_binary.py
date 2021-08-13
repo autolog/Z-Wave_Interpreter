@@ -41,19 +41,14 @@ class ZwaveSwitchBinary:
 
     def interpret(self):
 
-        # 01 09 00 13 9F 02 25 02 25 1F 65
-
         try:
             if self.zw_interpretation[ZW_COMMAND] == ZW_SWITCH_BINARY_SET:
-                pass
                 self._interpret_set()
                 return
             elif self.zw_interpretation[ZW_COMMAND] == ZW_SWITCH_BINARY_GET:
-                pass
                 self._interpret_get()
                 return
             elif self.zw_interpretation[ZW_COMMAND] == ZW_SWITCH_BINARY_REPORT:
-                pass
                 self._interpret_report()
                 return
 

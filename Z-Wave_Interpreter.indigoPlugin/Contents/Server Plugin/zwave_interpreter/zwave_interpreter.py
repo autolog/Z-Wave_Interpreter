@@ -20,6 +20,9 @@ from .zwave_utility import ZwaveUtility
 from .zwave_command_class_basic import ZwaveBasicCommand
 from .zwave_command_class_thermostat_setpoint import ZwaveThermostatSetpoint
 from .zwave_command_class_thermostat_mode import ZwaveThermostatMode
+from .zwave_command_class_thermostat_operating_state import ZwaveThermostatOperatingState
+from .zwave_command_class_thermostat_fan_mode import ZwaveThermostatFanMode
+from .zwave_command_class_thermostat_fan_state import ZwaveThermostatFanState
 from .zwave_command_class_sensor_multilevel import ZwaveSensorMultilevel
 from .zwave_command_class_switch_multilevel import ZwaveSwitchMultilevel
 from .zwave_command_class_meter import ZwaveMeter
@@ -113,20 +116,23 @@ class ZwaveInterpreter:
 
             self.utility = ZwaveUtility(self.logger, self.zw_command_classes, self.zw_interpretation)
             self.zwave_basic_command = ZwaveBasicCommand(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
-            self.zwave_thermostat_setpoint = ZwaveThermostatSetpoint(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
-            self.zwave_thermostat_mode = ZwaveThermostatMode(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
-            self.zwave_sensor_multilevel = ZwaveSensorMultilevel(self)
-            self.zwave_switch_multilevel = ZwaveSwitchMultilevel(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
-            self.zwave_meter = ZwaveMeter(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
-            self.zwave_wake_up = ZwaveWakeUp(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
-            self.zwave_sensor_binary = ZwaveSensorBinary(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
-            self.zwave_sensor_alarm = ZwaveSensorAlarm(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
             self.zwave_battery = ZwaveBattery(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
-            self.zwave_climate_control_schedule = ZwaveClimateControlSchedule(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
-            self.zwave_notification = ZwaveNotification(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
-            self.zwave_multi_channel = ZwaveMultiChannel(self)
-            self.zwave_switch_binary = ZwaveSwitchBinary(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
             self.zwave_central_scene = ZwaveCentralScene(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_climate_control_schedule = ZwaveClimateControlSchedule(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_meter = ZwaveMeter(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_multi_channel = ZwaveMultiChannel(self)
+            self.zwave_notification = ZwaveNotification(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_sensor_alarm = ZwaveSensorAlarm(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_sensor_binary = ZwaveSensorBinary(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_sensor_multilevel = ZwaveSensorMultilevel(self)
+            self.zwave_switch_binary = ZwaveSwitchBinary(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_switch_multilevel = ZwaveSwitchMultilevel(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_thermostat_mode = ZwaveThermostatMode(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_thermostat_fan_mode = ZwaveThermostatFanMode(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_thermostat_fan_state = ZwaveThermostatFanState(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_thermostat_operating_state = ZwaveThermostatOperatingState(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_thermostat_setpoint = ZwaveThermostatSetpoint(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_wake_up = ZwaveWakeUp(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
 
         except StandardError as standard_error_message:
             result_message = u"Error detected in 'ZwaveInterpreter' Class, '__init__' method"
@@ -263,8 +269,17 @@ class ZwaveInterpreter:
                     elif self.zw_interpretation[ZW_COMMAND_CLASS] == ZW_SENSOR_MULTILEVEL:
                         self.zwave_sensor_multilevel.interpret(self.zw_interpretation[ZW_COMMAND], self.zw_interpretation[ZW_COMMAND_DETAIL])
 
+                    elif self.zw_interpretation[ZW_COMMAND_CLASS] == ZW_THERMOSTAT_OPERATING_STATE:
+                        self.zwave_thermostat_operating_state.interpret()
+
                     elif self.zw_interpretation[ZW_COMMAND_CLASS] == ZW_THERMOSTAT_MODE:
                         self.zwave_thermostat_mode.interpret()
+
+                    elif self.zw_interpretation[ZW_COMMAND_CLASS] == ZW_THERMOSTAT_FAN_MODE:
+                        self.zwave_thermostat_fan_mode.interpret()
+
+                    elif self.zw_interpretation[ZW_COMMAND_CLASS] == ZW_THERMOSTAT_FAN_STATE:
+                        self.zwave_thermostat_fan_state.interpret()
 
                     elif self.zw_interpretation[ZW_COMMAND_CLASS] == ZW_THERMOSTAT_SETPOINT:
                         self.zwave_thermostat_setpoint.interpret()

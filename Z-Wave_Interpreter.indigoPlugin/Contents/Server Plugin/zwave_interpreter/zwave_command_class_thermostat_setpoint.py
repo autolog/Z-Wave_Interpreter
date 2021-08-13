@@ -86,8 +86,10 @@ class ZwaveThermostatSetpoint:
         try:
             if self.zw_interpretation[ZW_COMMAND] == ZW_THERMOSTAT_SETPOINT_SET:
                 self._interpret_set()
+                return
             elif self.zw_interpretation[ZW_COMMAND] == ZW_THERMOSTAT_SETPOINT_GET:
                 self._interpret_get()
+                return
             elif self.zw_interpretation[ZW_COMMAND] == ZW_THERMOSTAT_SETPOINT_REPORT:
                 self._interpret_report()
                 return

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <MenuItems>
 	<MenuItem id="zwaveInterpretations">
-		<Name>Select Devices to Interpret… </Name>
+		<Name>Select Devices to Interpret…</Name>
 		<ConfigUI>
 			<Field id="space_01" type="label" alwaysUseInDialogHeightCalc="true"><Label/></Field>
 
