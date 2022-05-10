@@ -1,10 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Z-Wave Interpreter © Autolog 2020
+# Z-Wave Interpreter © Autolog 2020-2022
 #
-
-import sys
 
 from .zwave_constants import *
 from .zwave_constants_interpretation import *
@@ -47,7 +45,7 @@ ZW_NOTIFICATION_TYPE_WATER_QUALITY_MONITORING = 0X15
 ZW_NOTIFICATION_TYPE_HOME_MONITORING = 0X16
 ZW_NOTIFICATION_TYPE_REQUEST_PENDING_NOTIFICATION = 0XFF
 
-ZW_STATE_HOME_SECURITY_IDLE = 0x00
+ZW_STATE_HOME_SECURITY_IDLE = 0x00   # noqa [Duplicated code fragment!]
 ZW_STATE_HOME_SECURITY_INTRUSION_LOCATION_PROVIDED = 0x01
 ZW_STATE_HOME_SECURITY_INTRUSION = 0x02
 ZW_STATE_HOME_SECURITY_TAMPERING_PRODUCT_COVER_REMOVED = 0x03
@@ -65,145 +63,144 @@ ZW_STATE_HOME_SECURITY_UNKNOWN_EVENT_STATE = 0xFE
 ZW_STATE_ACCESS_CONTROL_DOOR_WINDOW_OPEN = 0x16
 ZW_STATE_ACCESS_CONTROL_DOOR_WINDOW_CLOSED = 0x17
 
+
 class ZwaveNotification:
     """
     Z-Wave Command Class: Notification "0x71" [Decimal 113]
 
     """
 
-    def __init__(self, logger, utility, command_classes, zw_interpretation):
+    def __init__(self, exception_handler, logger, utility, command_classes, zw_interpretation):
         try:
+            self.exception_handler = exception_handler
             self.logger = logger
             self.utility = utility
             self.command_classes = command_classes
             self.zw_interpretation = zw_interpretation
 
             self.command_classes[ZW_NOTIFICATION] = dict()
-            self.command_classes[ZW_NOTIFICATION][ZW_IDENTIFIER] = u"Notification"
+            self.command_classes[ZW_NOTIFICATION][ZW_IDENTIFIER] = "Notification"
             self.command_classes[ZW_NOTIFICATION][ZW_COMMANDS] = dict()
-            self.command_classes[ZW_NOTIFICATION][ZW_COMMANDS][ZW_NOTIFICATION_EVENT_SUPPORTED_GET] = u"Event Supported Get"
-            self.command_classes[ZW_NOTIFICATION][ZW_COMMANDS][ZW_NOTIFICATION_EVENT_SUPPORTED_REPORT] = u"Event Supported Report"
-            self.command_classes[ZW_NOTIFICATION][ZW_COMMANDS][ZW_NOTIFICATION_NOTIFICATION_GET] = u"Get"
-            self.command_classes[ZW_NOTIFICATION][ZW_COMMANDS][ZW_NOTIFICATION_NOTIFICATION_REPORT] = u"Report"
-            self.command_classes[ZW_NOTIFICATION][ZW_COMMANDS][ZW_NOTIFICATION_NOTIFICATION_SET] = u"Set"
-            self.command_classes[ZW_NOTIFICATION][ZW_COMMANDS][ZW_NOTIFICATION_NOTIFICATION_SUPPORTED_GET] = u"Supported Get"
-            self.command_classes[ZW_NOTIFICATION][ZW_COMMANDS][ZW_NOTIFICATION_NOTIFICATION_SUPPORTED_REPORT] = u"Supported Report"
+            self.command_classes[ZW_NOTIFICATION][ZW_COMMANDS][ZW_NOTIFICATION_EVENT_SUPPORTED_GET] = "Event Supported Get"
+            self.command_classes[ZW_NOTIFICATION][ZW_COMMANDS][ZW_NOTIFICATION_EVENT_SUPPORTED_REPORT] = "Event Supported Report"
+            self.command_classes[ZW_NOTIFICATION][ZW_COMMANDS][ZW_NOTIFICATION_NOTIFICATION_GET] = "Get"
+            self.command_classes[ZW_NOTIFICATION][ZW_COMMANDS][ZW_NOTIFICATION_NOTIFICATION_REPORT] = "Report"
+            self.command_classes[ZW_NOTIFICATION][ZW_COMMANDS][ZW_NOTIFICATION_NOTIFICATION_SET] = "Set"
+            self.command_classes[ZW_NOTIFICATION][ZW_COMMANDS][ZW_NOTIFICATION_NOTIFICATION_SUPPORTED_GET] = "Supported Get"
+            self.command_classes[ZW_NOTIFICATION][ZW_COMMANDS][ZW_NOTIFICATION_NOTIFICATION_SUPPORTED_REPORT] = "Supported Report"
 
             self.notification_types = dict()
 
             self.notification_types[ZW_NOTIFICATION_TYPE_SMOKE_ALARM] = dict()
-            self.notification_types[ZW_NOTIFICATION_TYPE_SMOKE_ALARM][ZW_IDENTIFIER] = u"Smoke Alarm"
+            self.notification_types[ZW_NOTIFICATION_TYPE_SMOKE_ALARM][ZW_IDENTIFIER] = "Smoke Alarm"
             self.notification_types[ZW_NOTIFICATION_TYPE_SMOKE_ALARM][ZW_TYPES] = dict()
 
             self.notification_types[ZW_NOTIFICATION_TYPE_CO_ALARM] = dict()
-            self.notification_types[ZW_NOTIFICATION_TYPE_CO_ALARM][ZW_IDENTIFIER] = u"CO Alarm"
+            self.notification_types[ZW_NOTIFICATION_TYPE_CO_ALARM][ZW_IDENTIFIER] = "CO Alarm"
             self.notification_types[ZW_NOTIFICATION_TYPE_CO_ALARM][ZW_TYPES] = dict()
 
             self.notification_types[ZW_NOTIFICATION_TYPE_CO2_ALARM] = dict()
-            self.notification_types[ZW_NOTIFICATION_TYPE_CO2_ALARM][ZW_IDENTIFIER] = u"CO2 Alarm"
+            self.notification_types[ZW_NOTIFICATION_TYPE_CO2_ALARM][ZW_IDENTIFIER] = "CO2 Alarm"
             self.notification_types[ZW_NOTIFICATION_TYPE_CO2_ALARM][ZW_TYPES] = dict()
 
             self.notification_types[ZW_NOTIFICATION_TYPE_HEAT_ALARM] = dict()
-            self.notification_types[ZW_NOTIFICATION_TYPE_HEAT_ALARM][ZW_IDENTIFIER] = u"Heat Alarm"
+            self.notification_types[ZW_NOTIFICATION_TYPE_HEAT_ALARM][ZW_IDENTIFIER] = "Heat Alarm"
             self.notification_types[ZW_NOTIFICATION_TYPE_HEAT_ALARM][ZW_TYPES] = dict()
 
             self.notification_types[ZW_NOTIFICATION_TYPE_WATER_ALARM] = dict()
-            self.notification_types[ZW_NOTIFICATION_TYPE_WATER_ALARM][ZW_IDENTIFIER] = u"Water Alarm"
+            self.notification_types[ZW_NOTIFICATION_TYPE_WATER_ALARM][ZW_IDENTIFIER] = "Water Alarm"
             self.notification_types[ZW_NOTIFICATION_TYPE_WATER_ALARM][ZW_TYPES] = dict()
 
             self.notification_types[ZW_NOTIFICATION_TYPE_ACCESS_CONTROL] = dict()
-            self.notification_types[ZW_NOTIFICATION_TYPE_ACCESS_CONTROL][ZW_IDENTIFIER] = u"Access Control"
+            self.notification_types[ZW_NOTIFICATION_TYPE_ACCESS_CONTROL][ZW_IDENTIFIER] = "Access Control"
             self.notification_types[ZW_NOTIFICATION_TYPE_ACCESS_CONTROL][ZW_TYPES] = dict()
-            self.notification_types[ZW_NOTIFICATION_TYPE_ACCESS_CONTROL][ZW_TYPES][ZW_STATE_ACCESS_CONTROL_DOOR_WINDOW_OPEN] = u"Door/Window Is Open"
-            self.notification_types[ZW_NOTIFICATION_TYPE_ACCESS_CONTROL][ZW_TYPES][ZW_STATE_ACCESS_CONTROL_DOOR_WINDOW_CLOSED] = u"Door/Window Is Closed"
+            self.notification_types[ZW_NOTIFICATION_TYPE_ACCESS_CONTROL][ZW_TYPES][ZW_STATE_ACCESS_CONTROL_DOOR_WINDOW_OPEN] = "Door/Window Is Open"
+            self.notification_types[ZW_NOTIFICATION_TYPE_ACCESS_CONTROL][ZW_TYPES][ZW_STATE_ACCESS_CONTROL_DOOR_WINDOW_CLOSED] = "Door/Window Is Closed"
 
             self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY] = dict()
-            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_IDENTIFIER] = u"Home Security"
+            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_IDENTIFIER] = "Home Security"
             self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES] = dict()
-            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_IDLE] = u"Idle"
-            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_INTRUSION_LOCATION_PROVIDED] = u"Intrusion [Location Provided]"
-            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_INTRUSION] = u"Intrusion"
-            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_TAMPERING_PRODUCT_COVER_REMOVED] = u"Tampering [Product Cover Removed]"
-            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_TAMPERING_INVALID_CODE] = u"Tampering [Invalid Code]"
-            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_GLASS_BREAKAGE_LOCATION_PROVIDED] = u"Glass Breakage [Location Provided]"
-            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_GLASS_BREAKAGE] = u"Glass Breakage"
-            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_MOTION_DETECTION_LOCATION_PROVIDED] = u"Motion Detection [Location Provided]"
-            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_MOTION_DETECTION] = u"Motion Detection"
-            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_TAMPERING_PRODUCT_MOVED] = u"Tampering [Product Moved]"
-            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_IMPACT_DETECTED] = u"Impact Detected"
-            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_MAGNETIC_FIELD_INTERFERENCE_DETECTED] = u"Magnetic Field Interference Detected"
-            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_RF_JAMMING_DETECTED] = u"RF Jamming Detected"
-            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_UNKNOWN_EVENT_STATE] = u"Unknown Event/State"
+            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_IDLE] = "Idle"
+            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_INTRUSION_LOCATION_PROVIDED] = "Intrusion [Location Provided]"
+            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_INTRUSION] = "Intrusion"
+            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_TAMPERING_PRODUCT_COVER_REMOVED] = "Tampering [Product Cover Removed]"
+            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_TAMPERING_INVALID_CODE] = "Tampering [Invalid Code]"
+            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_GLASS_BREAKAGE_LOCATION_PROVIDED] = "Glass Breakage [Location Provided]"
+            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_GLASS_BREAKAGE] = "Glass Breakage"
+            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_MOTION_DETECTION_LOCATION_PROVIDED] = "Motion Detection [Location Provided]"
+            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_MOTION_DETECTION] = "Motion Detection"
+            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_TAMPERING_PRODUCT_MOVED] = "Tampering [Product Moved]"
+            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_IMPACT_DETECTED] = "Impact Detected"
+            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_MAGNETIC_FIELD_INTERFERENCE_DETECTED] = "Magnetic Field Interference Detected"
+            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_RF_JAMMING_DETECTED] = "RF Jamming Detected"
+            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_SECURITY][ZW_TYPES][ZW_STATE_HOME_SECURITY_UNKNOWN_EVENT_STATE] = "Unknown Event/State"
 
             self.notification_types[ZW_NOTIFICATION_TYPE_POWER_MANAGEMENT] = dict()
-            self.notification_types[ZW_NOTIFICATION_TYPE_POWER_MANAGEMENT][ZW_IDENTIFIER] = u"Power Management"
+            self.notification_types[ZW_NOTIFICATION_TYPE_POWER_MANAGEMENT][ZW_IDENTIFIER] = "Power Management"
             self.notification_types[ZW_NOTIFICATION_TYPE_POWER_MANAGEMENT][ZW_TYPES] = dict()
 
             self.notification_types[ZW_NOTIFICATION_TYPE_SYSTEM] = dict()
-            self.notification_types[ZW_NOTIFICATION_TYPE_SYSTEM][ZW_IDENTIFIER] = u"System"
+            self.notification_types[ZW_NOTIFICATION_TYPE_SYSTEM][ZW_IDENTIFIER] = "System"
             self.notification_types[ZW_NOTIFICATION_TYPE_SYSTEM][ZW_TYPES] = dict()
 
             self.notification_types[ZW_NOTIFICATION_TYPE_EMERGENCY_ALARM] = dict()
-            self.notification_types[ZW_NOTIFICATION_TYPE_EMERGENCY_ALARM][ZW_IDENTIFIER] = u"Emergency Alarm"
+            self.notification_types[ZW_NOTIFICATION_TYPE_EMERGENCY_ALARM][ZW_IDENTIFIER] = "Emergency Alarm"
             self.notification_types[ZW_NOTIFICATION_TYPE_EMERGENCY_ALARM][ZW_TYPES] = dict()
 
             self.notification_types[ZW_NOTIFICATION_TYPE_CLOCK] = dict()
-            self.notification_types[ZW_NOTIFICATION_TYPE_CLOCK][ZW_IDENTIFIER] = u"Clock"
+            self.notification_types[ZW_NOTIFICATION_TYPE_CLOCK][ZW_IDENTIFIER] = "Clock"
             self.notification_types[ZW_NOTIFICATION_TYPE_CLOCK][ZW_TYPES] = dict()
 
             self.notification_types[ZW_NOTIFICATION_TYPE_APPLIANCE] = dict()
-            self.notification_types[ZW_NOTIFICATION_TYPE_APPLIANCE][ZW_IDENTIFIER] = u"Appliance"
+            self.notification_types[ZW_NOTIFICATION_TYPE_APPLIANCE][ZW_IDENTIFIER] = "Appliance"
             self.notification_types[ZW_NOTIFICATION_TYPE_APPLIANCE][ZW_TYPES] = dict()
 
             self.notification_types[ZW_NOTIFICATION_TYPE_HOME_HEALTH] = dict()
-            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_HEALTH][ZW_IDENTIFIER] = u"Home Health"
+            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_HEALTH][ZW_IDENTIFIER] = "Home Health"
             self.notification_types[ZW_NOTIFICATION_TYPE_HOME_HEALTH][ZW_TYPES] = dict()
 
             self.notification_types[ZW_NOTIFICATION_TYPE_SIREN] = dict()
-            self.notification_types[ZW_NOTIFICATION_TYPE_SIREN][ZW_IDENTIFIER] = u"Siren"
+            self.notification_types[ZW_NOTIFICATION_TYPE_SIREN][ZW_IDENTIFIER] = "Siren"
             self.notification_types[ZW_NOTIFICATION_TYPE_SIREN][ZW_TYPES] = dict()
 
             self.notification_types[ZW_NOTIFICATION_TYPE_WATER_VALVE] = dict()
-            self.notification_types[ZW_NOTIFICATION_TYPE_WATER_VALVE][ZW_IDENTIFIER] = u"Water Valve"
+            self.notification_types[ZW_NOTIFICATION_TYPE_WATER_VALVE][ZW_IDENTIFIER] = "Water Valve"
             self.notification_types[ZW_NOTIFICATION_TYPE_WATER_VALVE][ZW_TYPES] = dict()
 
             self.notification_types[ZW_NOTIFICATION_TYPE_WEATHER_ALARM] = dict()
-            self.notification_types[ZW_NOTIFICATION_TYPE_WEATHER_ALARM][ZW_IDENTIFIER] = u"Weather Alarm"
+            self.notification_types[ZW_NOTIFICATION_TYPE_WEATHER_ALARM][ZW_IDENTIFIER] = "Weather Alarm"
             self.notification_types[ZW_NOTIFICATION_TYPE_WEATHER_ALARM][ZW_TYPES] = dict()
 
             self.notification_types[ZW_NOTIFICATION_TYPE_IRRIGATION] = dict()
-            self.notification_types[ZW_NOTIFICATION_TYPE_IRRIGATION][ZW_IDENTIFIER] = u"Irrigation"
+            self.notification_types[ZW_NOTIFICATION_TYPE_IRRIGATION][ZW_IDENTIFIER] = "Irrigation"
             self.notification_types[ZW_NOTIFICATION_TYPE_IRRIGATION][ZW_TYPES] = dict()
 
             self.notification_types[ZW_NOTIFICATION_TYPE_GAS_ALARM] = dict()
-            self.notification_types[ZW_NOTIFICATION_TYPE_GAS_ALARM][ZW_IDENTIFIER] = u"Gas Alarm"
+            self.notification_types[ZW_NOTIFICATION_TYPE_GAS_ALARM][ZW_IDENTIFIER] = "Gas Alarm"
             self.notification_types[ZW_NOTIFICATION_TYPE_GAS_ALARM][ZW_TYPES] = dict()
 
             self.notification_types[ZW_NOTIFICATION_TYPE_PEST_CONTROL] = dict()
-            self.notification_types[ZW_NOTIFICATION_TYPE_PEST_CONTROL][ZW_IDENTIFIER] = u"Pest Control"
+            self.notification_types[ZW_NOTIFICATION_TYPE_PEST_CONTROL][ZW_IDENTIFIER] = "Pest Control"
             self.notification_types[ZW_NOTIFICATION_TYPE_PEST_CONTROL][ZW_TYPES] = dict()
 
             self.notification_types[ZW_NOTIFICATION_TYPE_LIGHT_SENSOR] = dict()
-            self.notification_types[ZW_NOTIFICATION_TYPE_LIGHT_SENSOR][ZW_IDENTIFIER] = u"Light Sensor"
+            self.notification_types[ZW_NOTIFICATION_TYPE_LIGHT_SENSOR][ZW_IDENTIFIER] = "Light Sensor"
             self.notification_types[ZW_NOTIFICATION_TYPE_LIGHT_SENSOR][ZW_TYPES] = dict()
 
             self.notification_types[ZW_NOTIFICATION_TYPE_WATER_QUALITY_MONITORING] = dict()
-            self.notification_types[ZW_NOTIFICATION_TYPE_WATER_QUALITY_MONITORING][ZW_IDENTIFIER] = u"Water Quality mMnitoring"
+            self.notification_types[ZW_NOTIFICATION_TYPE_WATER_QUALITY_MONITORING][ZW_IDENTIFIER] = "Water Quality mMnitoring"
             self.notification_types[ZW_NOTIFICATION_TYPE_WATER_QUALITY_MONITORING][ZW_TYPES] = dict()
 
             self.notification_types[ZW_NOTIFICATION_TYPE_HOME_MONITORING] = dict()
-            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_MONITORING][ZW_IDENTIFIER] = u"Home Monitoring"
+            self.notification_types[ZW_NOTIFICATION_TYPE_HOME_MONITORING][ZW_IDENTIFIER] = "Home Monitoring"
             self.notification_types[ZW_NOTIFICATION_TYPE_HOME_MONITORING][ZW_TYPES] = dict()
 
             self.notification_types[ZW_NOTIFICATION_TYPE_REQUEST_PENDING_NOTIFICATION] = dict()
-            self.notification_types[ZW_NOTIFICATION_TYPE_REQUEST_PENDING_NOTIFICATION][ZW_IDENTIFIER] = u"Request Pending Notification"
+            self.notification_types[ZW_NOTIFICATION_TYPE_REQUEST_PENDING_NOTIFICATION][ZW_IDENTIFIER] = "Request Pending Notification"
             self.notification_types[ZW_NOTIFICATION_TYPE_REQUEST_PENDING_NOTIFICATION][ZW_TYPES] = dict()
 
-
-
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveNotification' Class, '__init__' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement
 
     def interpret(self):
         try:
@@ -226,19 +223,18 @@ class ZwaveNotification:
             error_message = self.utility.not_supported(self.zw_interpretation)
             self.zw_interpretation[ZW_ERROR_MESSAGE] = error_message
 
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveNotification' Class, 'process_class_notification' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement
 
     def _interpret_report(self):
         try:
             if self.zw_interpretation[ZW_COMMAND_PACKET_LENGTH] >= 9:
                 # Assume Version 8 of Notification Command
 
-                v1_alarm_type = self.zw_interpretation[ZW_COMMAND_DETAIL][0]
-                v1_alarm_level = self.zw_interpretation[ZW_COMMAND_DETAIL][1]
+                # v1_alarm_type = self.zw_interpretation[ZW_COMMAND_DETAIL][0]
+                # v1_alarm_level = self.zw_interpretation[ZW_COMMAND_DETAIL][1]
                 # reserved
-                notification_status = self.zw_interpretation[ZW_COMMAND_DETAIL][3]
+                # notification_status = self.zw_interpretation[ZW_COMMAND_DETAIL][3]
                 notification_type = self.zw_interpretation[ZW_COMMAND_DETAIL][4]
                 notification_status_event = self.zw_interpretation[ZW_COMMAND_DETAIL][5]
 
@@ -247,20 +243,15 @@ class ZwaveNotification:
                     if notification_status_event in self.notification_types[notification_type][ZW_TYPES]:
                         notification_status_event_ui = self.notification_types[notification_type][ZW_TYPES][notification_status_event]
                     else:
-                        notification_status_event_ui = u"{0} Unknown".format(hex(notification_status_event))
+                        notification_status_event_ui = f"{hex(notification_status_event)} Unknown"
                 else:
-                    notification_type_ui = u"{0} Unknown".format(hex(notification_type))
-                    notification_status_event_ui = u"{0} Unknown".format(hex(notification_status_event))
+                    notification_type_ui = f"{hex(notification_type)} Unknown"
+                    notification_status_event_ui = f"{hex(notification_status_event)} Unknown"
 
-                self.zw_interpretation[ZW_INTERPRETATION_UI] = (u"Class: '{0} [{1}]', Command: '{2}', Type: '{3}', Event/State: '{4}'"
-                                                                .format(self.zw_interpretation[ZW_COMMAND_CLASS_UI],
-                                                                        self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI],
-                                                                        self.zw_interpretation[ZW_COMMAND_UI],
-                                                                        notification_type_ui,
-                                                                        notification_status_event_ui))
+                self.zw_interpretation[ZW_INTERPRETATION_UI] = (
+                    f"Class: '{self.zw_interpretation[ZW_COMMAND_CLASS_UI]} [{self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI]}]', Command: '{self.zw_interpretation[ZW_COMMAND_UI]}', Type: '{notification_type_ui}', Event/State: '{notification_status_event_ui}'")
 
                 self.zw_interpretation[ZW_INTERPRETED] = True
 
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveNotification' Class, 'process_command_notification_report' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement

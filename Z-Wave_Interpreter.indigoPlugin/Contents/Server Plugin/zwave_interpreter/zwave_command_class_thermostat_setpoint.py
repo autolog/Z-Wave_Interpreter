@@ -1,10 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Z-Wave Interpreter © Autolog 2020
+# Z-Wave Interpreter © Autolog 2020-2022
 #
-
-import sys
 
 from .zwave_constants import *
 from .zwave_constants_interpretation import *
@@ -43,44 +41,44 @@ class ZwaveThermostatSetpoint:
 
     """
 
-    def __init__(self, logger, utility, command_classes, zw_interpretation):
+    def __init__(self, exception_handler, logger, utility, command_classes, zw_interpretation):
         try:
+            self.exception_handler = exception_handler
             self.logger = logger
             self.utility = utility
             self.command_classes = command_classes
             self.zw_interpretation = zw_interpretation
 
             self.command_classes[ZW_THERMOSTAT_SETPOINT] = dict()
-            self.command_classes[ZW_THERMOSTAT_SETPOINT][ZW_IDENTIFIER] = u"Thermostat Setpoint"
+            self.command_classes[ZW_THERMOSTAT_SETPOINT][ZW_IDENTIFIER] = "Thermostat Setpoint"
             self.command_classes[ZW_THERMOSTAT_SETPOINT][ZW_COMMANDS] = dict()
-            self.command_classes[ZW_THERMOSTAT_SETPOINT][ZW_COMMANDS][ZW_THERMOSTAT_SETPOINT_SET] = u"Set"
-            self.command_classes[ZW_THERMOSTAT_SETPOINT][ZW_COMMANDS][ZW_THERMOSTAT_SETPOINT_GET] = u"Get"
-            self.command_classes[ZW_THERMOSTAT_SETPOINT][ZW_COMMANDS][ZW_THERMOSTAT_SETPOINT_REPORT] = u"Report"
-            self.command_classes[ZW_THERMOSTAT_SETPOINT][ZW_COMMANDS][ZW_THERMOSTAT_SETPOINT_SUPPORTED_GET] = u"Supported Get"
-            self.command_classes[ZW_THERMOSTAT_SETPOINT][ZW_COMMANDS][ZW_THERMOSTAT_SETPOINT_SUPPORTED_REPORT] = u"Supported Report"
-            self.command_classes[ZW_THERMOSTAT_SETPOINT][ZW_COMMANDS][ZW_THERMOSTAT_SETPOINT_CAPABILITIES_GET] = u"Capabilities Get"
-            self.command_classes[ZW_THERMOSTAT_SETPOINT][ZW_COMMANDS][ZW_THERMOSTAT_SETPOINT_CAPABILITIES_REPORT] = u"Capabilities Report"
+            self.command_classes[ZW_THERMOSTAT_SETPOINT][ZW_COMMANDS][ZW_THERMOSTAT_SETPOINT_SET] = "Set"
+            self.command_classes[ZW_THERMOSTAT_SETPOINT][ZW_COMMANDS][ZW_THERMOSTAT_SETPOINT_GET] = "Get"
+            self.command_classes[ZW_THERMOSTAT_SETPOINT][ZW_COMMANDS][ZW_THERMOSTAT_SETPOINT_REPORT] = "Report"
+            self.command_classes[ZW_THERMOSTAT_SETPOINT][ZW_COMMANDS][ZW_THERMOSTAT_SETPOINT_SUPPORTED_GET] = "Supported Get"
+            self.command_classes[ZW_THERMOSTAT_SETPOINT][ZW_COMMANDS][ZW_THERMOSTAT_SETPOINT_SUPPORTED_REPORT] = "Supported Report"
+            self.command_classes[ZW_THERMOSTAT_SETPOINT][ZW_COMMANDS][ZW_THERMOSTAT_SETPOINT_CAPABILITIES_GET] = "Capabilities Get"
+            self.command_classes[ZW_THERMOSTAT_SETPOINT][ZW_COMMANDS][ZW_THERMOSTAT_SETPOINT_CAPABILITIES_REPORT] = "Capabilities Report"
             
             self.zw_thermostat_setpoint_types = dict()
-            self.zw_thermostat_setpoint_types[ZW_THERMOSTAT_SETPOINT_TYPE_HEATING] = u"Heating"
-            self.zw_thermostat_setpoint_types[ZW_THERMOSTAT_SETPOINT_TYPE_COOLING] = u"Cooling"
-            self.zw_thermostat_setpoint_types[ZW_THERMOSTAT_SETPOINT_TYPE_FURNACE] = u"Furnace"
-            self.zw_thermostat_setpoint_types[ZW_THERMOSTAT_SETPOINT_TYPE_DRY_AIR] = u"Dry Air"
-            self.zw_thermostat_setpoint_types[ZW_THERMOSTAT_SETPOINT_TYPE_MOIST_AIR] = u"Moist Air"
-            self.zw_thermostat_setpoint_types[ZW_THERMOSTAT_SETPOINT_TYPE_AUTO_CHANGEOVER] = u"Auto Changeover"
-            self.zw_thermostat_setpoint_types[ZW_THERMOSTAT_SETPOINT_TYPE_ENERGY_SAVE_HEATING] = u"Energy Save Heating"
-            self.zw_thermostat_setpoint_types[ZW_THERMOSTAT_SETPOINT_TYPE_ENERGY_SAVE_COOLING] = u"Energy Save Cooling"
-            self.zw_thermostat_setpoint_types[ZW_THERMOSTAT_SETPOINT_TYPE_AWAY_HEATING] = u"Away Heating"
-            self.zw_thermostat_setpoint_types[ZW_THERMOSTAT_SETPOINT_TYPE_AWAY_COOLING] = u"Away Cooling"
-            self.zw_thermostat_setpoint_types[ZW_THERMOSTAT_SETPOINT_TYPE_FULL_POWER] = u"Full Power"
+            self.zw_thermostat_setpoint_types[ZW_THERMOSTAT_SETPOINT_TYPE_HEATING] = "Heating"
+            self.zw_thermostat_setpoint_types[ZW_THERMOSTAT_SETPOINT_TYPE_COOLING] = "Cooling"
+            self.zw_thermostat_setpoint_types[ZW_THERMOSTAT_SETPOINT_TYPE_FURNACE] = "Furnace"
+            self.zw_thermostat_setpoint_types[ZW_THERMOSTAT_SETPOINT_TYPE_DRY_AIR] = "Dry Air"
+            self.zw_thermostat_setpoint_types[ZW_THERMOSTAT_SETPOINT_TYPE_MOIST_AIR] = "Moist Air"
+            self.zw_thermostat_setpoint_types[ZW_THERMOSTAT_SETPOINT_TYPE_AUTO_CHANGEOVER] = "Auto Changeover"
+            self.zw_thermostat_setpoint_types[ZW_THERMOSTAT_SETPOINT_TYPE_ENERGY_SAVE_HEATING] = "Energy Save Heating"
+            self.zw_thermostat_setpoint_types[ZW_THERMOSTAT_SETPOINT_TYPE_ENERGY_SAVE_COOLING] = "Energy Save Cooling"
+            self.zw_thermostat_setpoint_types[ZW_THERMOSTAT_SETPOINT_TYPE_AWAY_HEATING] = "Away Heating"
+            self.zw_thermostat_setpoint_types[ZW_THERMOSTAT_SETPOINT_TYPE_AWAY_COOLING] = "Away Cooling"
+            self.zw_thermostat_setpoint_types[ZW_THERMOSTAT_SETPOINT_TYPE_FULL_POWER] = "Full Power"
             
             self.zw_thermostat_setpoint_scales = dict()
-            self.zw_thermostat_setpoint_scales[ZW_THERMOSTAT_SETPOINT_SCALE_CELSIUS] = (u"Celsius (C)", u"º C")
-            self.zw_thermostat_setpoint_scales[ZW_THERMOSTAT_SETPOINT_SCALE_FAHRENHEIT] = (u"Fahrenheit (F)", u"º F")
+            self.zw_thermostat_setpoint_scales[ZW_THERMOSTAT_SETPOINT_SCALE_CELSIUS] = ("Celsius (C)", "° C")
+            self.zw_thermostat_setpoint_scales[ZW_THERMOSTAT_SETPOINT_SCALE_FAHRENHEIT] = ("Fahrenheit (F)", "° F")
 
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveThermostatSetpoint' Class, '__init__' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement
 
     def interpret(self):
         try:
@@ -105,9 +103,8 @@ class ZwaveThermostatSetpoint:
             error_message = self.utility.not_supported(self.zw_interpretation)
             self.zw_interpretation[ZW_ERROR_MESSAGE] = error_message
     
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveThermostatSetpoint' Class, 'interpret' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement
 
     def _interpret_get(self):
         try:
@@ -116,23 +113,19 @@ class ZwaveThermostatSetpoint:
             if setpoint_type in self.zw_thermostat_setpoint_types:
                 self.zw_interpretation[ZW_SETPOINT_TYPE_UI] = self.zw_thermostat_setpoint_types[setpoint_type]
             else:
-                self.zw_interpretation[ZW_SETPOINT_TYPE_UI] = u"Setpoint Type {0} unknown".format(setpoint_type)
+                self.zw_interpretation[ZW_SETPOINT_TYPE_UI] = f"Setpoint Type {setpoint_type} unknown"
     
-            self.zw_interpretation[ZW_INTERPRETATION_UI] = (u"Class: '{0} [{1}]', Command: '{2}', Setpoint Type: '{3}'"
-                                                            .format(self.zw_interpretation[ZW_COMMAND_CLASS_UI],
-                                                                    self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI],
-                                                                    self.zw_interpretation[ZW_COMMAND_UI],
-                                                                    self.zw_interpretation[ZW_SETPOINT_TYPE_UI]))
+            self.zw_interpretation[ZW_INTERPRETATION_UI] = (
+                f"Class: '{self.zw_interpretation[ZW_COMMAND_CLASS_UI]} [{self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI]}]', Command: '{self.zw_interpretation[ZW_COMMAND_UI]}', Setpoint Type: '{self.zw_interpretation[ZW_SETPOINT_TYPE_UI]}'")
     
             self.zw_interpretation[ZW_INTERPRETED] = True
     
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveThermostatSetpoint' Class, '_interpret_get' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement
 
     def _interpret_report(self):
         try:
-            setpoint_type = self.zw_interpretation[ZW_COMMAND_DETAIL][0] & 0B00001111
+            setpoint_type = self.zw_interpretation[ZW_COMMAND_DETAIL][0] & 0B00001111  # noqa [Duplicated code fragment!]
     
             precision, scale, size = self.utility.precision_scale_size(self.zw_interpretation[ZW_COMMAND_DETAIL][1])
     
@@ -140,21 +133,21 @@ class ZwaveThermostatSetpoint:
                 scale_ui = self.zw_thermostat_setpoint_scales[scale][0]
                 scale_ui_compact = self.zw_thermostat_setpoint_scales[scale][1]
             else:
-                scale_ui = scale_ui_compact = (u" [Unknown Scale: {0}]".format(scale))
+                scale_ui = scale_ui_compact = (f" [Unknown Scale: {scale}]")
     
             end_value = 2 + size
             value = self.utility.bytes_to_int(self.zw_interpretation[ZW_COMMAND_DETAIL][2:end_value])
             if self.zw_interpretation[ZW_COMMAND_DETAIL][2] & 0b10000000:  # Check if a negative number (high order bit set)
                 value = self.utility.twos_complement(value, size * 8)
             # value = float(value)/10**precision  # Set precision e.g. 1859 > 18.59 if precision = 2
-            value_ui_format = "{{:.{0}f}}".format(precision)
+            value_ui_format = f"{{:.{precision}f}}"
             value_ui = value_ui_format.format(float(value) / 10 ** precision)
     
             self.zw_interpretation[ZW_SETPOINT_TYPE] = setpoint_type
             if setpoint_type in self.zw_thermostat_setpoint_types:
                 self.zw_interpretation[ZW_SETPOINT_TYPE_UI] = self.zw_thermostat_setpoint_types[setpoint_type]
             else:
-                self.zw_interpretation[ZW_SETPOINT_TYPE_UI] = u"Setpoint Type {0} unknown".format(setpoint_type)
+                self.zw_interpretation[ZW_SETPOINT_TYPE_UI] = f"Setpoint Type {setpoint_type} unknown"
             self.zw_interpretation[ZW_PRECISION] = precision
             self.zw_interpretation[ZW_SCALES] = scale
             self.zw_interpretation[ZW_SCALE_UI] = scale_ui
@@ -163,23 +156,17 @@ class ZwaveThermostatSetpoint:
             self.zw_interpretation[ZW_VALUE] = value
             self.zw_interpretation[ZW_VALUE_UI] = value_ui
     
-            self.zw_interpretation[ZW_INTERPRETATION_UI] = (u"Class: '{0} [{1}]', Command: '{2}', Setpoint Type: '{3}', Value: '{4}{5}'"
-                                                            .format(self.zw_interpretation[ZW_COMMAND_CLASS_UI],
-                                                                    self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI],
-                                                                    self.zw_interpretation[ZW_COMMAND_UI],
-                                                                    self.zw_interpretation[ZW_SETPOINT_TYPE_UI],
-                                                                    self.zw_interpretation[ZW_VALUE_UI],
-                                                                    self.zw_interpretation[ZW_SCALE_UI_COMPACT]))
+            self.zw_interpretation[ZW_INTERPRETATION_UI] = (
+                f"Class: '{self.zw_interpretation[ZW_COMMAND_CLASS_UI]} [{self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI]}]', Command: '{self.zw_interpretation[ZW_COMMAND_UI]}', Setpoint Type: '{self.zw_interpretation[ZW_SETPOINT_TYPE_UI]}', Value: '{self.zw_interpretation[ZW_VALUE_UI]}{self.zw_interpretation[ZW_SCALE_UI_COMPACT]}'")
     
             self.zw_interpretation[ZW_INTERPRETED] = True
     
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveThermostatSetpoint' Class, '_interpret_report' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement
     
     def _interpret_set(self):
         try:
-            setpoint_type = self.zw_interpretation[ZW_COMMAND_DETAIL][0] & 0B00001111
+            setpoint_type = self.zw_interpretation[ZW_COMMAND_DETAIL][0] & 0B00001111  # noqa [Duplicated code fragment!]
     
             precision, scale, size = self.utility.precision_scale_size(self.zw_interpretation[ZW_COMMAND_DETAIL][1])
     
@@ -187,21 +174,21 @@ class ZwaveThermostatSetpoint:
                 scale_ui = self.zw_thermostat_setpoint_scales[scale][0]
                 scale_ui_compact = self.zw_thermostat_setpoint_scales[scale][1]
             else:
-                scale_ui = scale_ui_compact = (u" [Unknown Scale: {0}]".format(scale))
+                scale_ui = scale_ui_compact = (f" [Unknown Scale: {scale}]")
     
             end_value = 2 + size
             value = self.utility.bytes_to_int(self.zw_interpretation[ZW_COMMAND_DETAIL][2:end_value])
             if self.zw_interpretation[ZW_COMMAND_DETAIL][2] & 0b10000000:  # Check if a negative number (high order bit set)
                 value = self.utility.twos_complement(value, size * 8)
             # value = float(value)/10**precision  # Set precision e.g. 1859 > 18.59 if precision = 2
-            value_ui_format = "{{:.{0}f}}".format(precision)
+            value_ui_format = f"{{:.{precision}f}}"
             value_ui = value_ui_format.format(float(value) / 10 ** precision)
     
             self.zw_interpretation[ZW_SETPOINT_TYPE] = setpoint_type
             if setpoint_type in self.zw_thermostat_setpoint_types:
                 self.zw_interpretation[ZW_SETPOINT_TYPE_UI] = self.zw_thermostat_setpoint_types[setpoint_type]
             else:
-                self.zw_interpretation[ZW_SETPOINT_TYPE_UI] = u"Setpoint Type {0} unknown".format(setpoint_type)
+                self.zw_interpretation[ZW_SETPOINT_TYPE_UI] = f"Setpoint Type {setpoint_type} unknown"
             self.zw_interpretation[ZW_PRECISION] = precision
             self.zw_interpretation[ZW_SCALES] = scale
             self.zw_interpretation[ZW_SCALE_UI] = scale_ui
@@ -210,16 +197,10 @@ class ZwaveThermostatSetpoint:
             self.zw_interpretation[ZW_VALUE] = value
             self.zw_interpretation[ZW_VALUE_UI] = value_ui
     
-            self.zw_interpretation[ZW_INTERPRETATION_UI] = (u"Class: '{0} [{1}]', Command: '{2}', Setpoint: '{3}', Value: '{4}{5}'"
-                                                            .format(self.zw_interpretation[ZW_COMMAND_CLASS_UI],
-                                                                    self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI],
-                                                                    self.zw_interpretation[ZW_COMMAND_UI],
-                                                                    self.zw_interpretation[ZW_SETPOINT_TYPE_UI],
-                                                                    self.zw_interpretation[ZW_VALUE_UI],
-                                                                    self.zw_interpretation[ZW_SCALE_UI_COMPACT]))
+            self.zw_interpretation[ZW_INTERPRETATION_UI] = (
+                f"Class: '{self.zw_interpretation[ZW_COMMAND_CLASS_UI]} [{self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI]}]', Command: '{self.zw_interpretation[ZW_COMMAND_UI]}', Setpoint: '{self.zw_interpretation[ZW_SETPOINT_TYPE_UI]}', Value: '{self.zw_interpretation[ZW_VALUE_UI]}{self.zw_interpretation[ZW_SCALE_UI_COMPACT]}'")
     
             self.zw_interpretation[ZW_INTERPRETED] = True
-    
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveThermostatSetpoint' Class, '_interpret_set' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
+
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement

@@ -1,10 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Z-Wave Interpreter © Autolog 2020
+# Z-Wave Interpreter © Autolog 2020-2022
 #
-
-import sys
 
 from .zwave_constants import *
 from .zwave_constants_interpretation import *
@@ -30,33 +28,33 @@ class ZwaveThermostatFanState:
 
     """
 
-    def __init__(self, logger, utility, command_classes, zw_interpretation):
+    def __init__(self, exception_handler, logger, utility, command_classes, zw_interpretation):
         try:
+            self.exception_handler = exception_handler
             self.logger = logger
             self.utility = utility
             self.command_classes = command_classes
             self.zw_interpretation = zw_interpretation
 
             self.command_classes[ZW_THERMOSTAT_FAN_STATE] = dict()
-            self.command_classes[ZW_THERMOSTAT_FAN_STATE][ZW_IDENTIFIER] = u"Thermostat Fan State"
+            self.command_classes[ZW_THERMOSTAT_FAN_STATE][ZW_IDENTIFIER] = "Thermostat Fan State"
             self.command_classes[ZW_THERMOSTAT_FAN_STATE][ZW_COMMANDS] = dict()
-            self.command_classes[ZW_THERMOSTAT_FAN_STATE][ZW_COMMANDS][ZW_THERMOSTAT_FAN_STATE_GET] = u"Get"
-            self.command_classes[ZW_THERMOSTAT_FAN_STATE][ZW_COMMANDS][ZW_THERMOSTAT_FAN_STATE_REPORT] = u"Report"
+            self.command_classes[ZW_THERMOSTAT_FAN_STATE][ZW_COMMANDS][ZW_THERMOSTAT_FAN_STATE_GET] = "Get"
+            self.command_classes[ZW_THERMOSTAT_FAN_STATE][ZW_COMMANDS][ZW_THERMOSTAT_FAN_STATE_REPORT] = "Report"
 
             self.zw_thermostat_modes = dict()
-            self.zw_thermostat_modes[ZW_THERMOSTAT_FAN_STATE_IDLE_OFF] = u"Idle / Off"
-            self.zw_thermostat_modes[ZW_THERMOSTAT_FAN_STATE_RUNNING_RUNNING_LOW] = u"Running / Running Low"
-            self.zw_thermostat_modes[ZW_THERMOSTAT_FAN_STATE_RUNNING_HIGH] = u"Running High"
-            self.zw_thermostat_modes[ZW_THERMOSTAT_FAN_STATE_RUNNING_MEDIUM] = u"Running Medium"
-            self.zw_thermostat_modes[ZW_THERMOSTAT_FAN_STATE_CIRCULATION_MODE] = u"Circulation Mode"
-            self.zw_thermostat_modes[ZW_THERMOSTAT_FAN_STATE_HUMIDITY_CIRCULATION_MODE] = u"Humidity Circulation Mode"
-            self.zw_thermostat_modes[ZW_THERMOSTAT_FAN_STATE_RIGHT_LEFT_CIRCULATION_MODE] = u"Right - Left Circulation Mode"
-            self.zw_thermostat_modes[ZW_THERMOSTAT_FAN_STATE_UP_DOWN_CIRCULATION_MODE] = u"Up - Down Circulation Mode"
-            self.zw_thermostat_modes[ZW_THERMOSTAT_FAN_STATE_QUIET_CIRCULATION_MODE] = u"Quiet Circulation Mode"
+            self.zw_thermostat_modes[ZW_THERMOSTAT_FAN_STATE_IDLE_OFF] = "Idle / Off"
+            self.zw_thermostat_modes[ZW_THERMOSTAT_FAN_STATE_RUNNING_RUNNING_LOW] = "Running / Running Low"
+            self.zw_thermostat_modes[ZW_THERMOSTAT_FAN_STATE_RUNNING_HIGH] = "Running High"
+            self.zw_thermostat_modes[ZW_THERMOSTAT_FAN_STATE_RUNNING_MEDIUM] = "Running Medium"
+            self.zw_thermostat_modes[ZW_THERMOSTAT_FAN_STATE_CIRCULATION_MODE] = "Circulation Mode"
+            self.zw_thermostat_modes[ZW_THERMOSTAT_FAN_STATE_HUMIDITY_CIRCULATION_MODE] = "Humidity Circulation Mode"
+            self.zw_thermostat_modes[ZW_THERMOSTAT_FAN_STATE_RIGHT_LEFT_CIRCULATION_MODE] = "Right - Left Circulation Mode"
+            self.zw_thermostat_modes[ZW_THERMOSTAT_FAN_STATE_UP_DOWN_CIRCULATION_MODE] = "Up - Down Circulation Mode"
+            self.zw_thermostat_modes[ZW_THERMOSTAT_FAN_STATE_QUIET_CIRCULATION_MODE] = "Quiet Circulation Mode"
 
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveThermostatFanState' Class, '__init__' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement
 
     def interpret(self):
         try:
@@ -70,22 +68,18 @@ class ZwaveThermostatFanState:
             error_message = self.utility.not_supported(self.zw_interpretation)
             self.zw_interpretation[ZW_ERROR_MESSAGE] = error_message
 
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveThermostatFanState' Class, 'interpret' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement
 
     def _interpret_get(self):
         try:
-            self.zw_interpretation[ZW_INTERPRETATION_UI] = (u"Class: '{0} [{1}]', Command: '{2}'"
-                                                            .format(self.zw_interpretation[ZW_COMMAND_CLASS_UI],
-                                                                    self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI],
-                                                                    self.zw_interpretation[ZW_COMMAND_UI]))
+            self.zw_interpretation[ZW_INTERPRETATION_UI] = (
+                f"Class: '{self.zw_interpretation[ZW_COMMAND_CLASS_UI]} [{self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI]}]', Command: '{self.zw_interpretation[ZW_COMMAND_UI]}'")
 
             self.zw_interpretation[ZW_INTERPRETED] = True
 
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveThermostatFanState' Class, '_interpret_get' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement
 
     def _interpret_report(self):
         try:
@@ -93,14 +87,10 @@ class ZwaveThermostatFanState:
             self.zw_interpretation[ZW_FAN_MODE] = fan_operating_state
             self.zw_interpretation[ZW_FAN_MODE_UI] = self.zw_thermostat_modes[fan_operating_state]
 
-            self.zw_interpretation[ZW_INTERPRETATION_UI] = (u"Class: '{0} [{1}]', Command: '{2}', Fan Operating State: '{3}'"
-                                                            .format(self.zw_interpretation[ZW_COMMAND_CLASS_UI],
-                                                                    self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI],
-                                                                    self.zw_interpretation[ZW_COMMAND_UI],
-                                                                    self.zw_interpretation[ZW_FAN_MODE_UI]))
+            self.zw_interpretation[ZW_INTERPRETATION_UI] = (
+                f"Class: '{self.zw_interpretation[ZW_COMMAND_CLASS_UI]} [{self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI]}]', Command: '{self.zw_interpretation[ZW_COMMAND_UI]}', Fan Operating State: '{self.zw_interpretation[ZW_FAN_MODE_UI]}'")
 
             self.zw_interpretation[ZW_INTERPRETED] = True
 
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveThermostatFanState' Class, '_interpret_report' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement

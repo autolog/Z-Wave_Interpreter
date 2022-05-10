@@ -1,10 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Z-Wave Interpreter © Autolog 2020
+# Z-Wave Interpreter © Autolog 2020-2022
 #
-
-import sys
 
 from .zwave_constants import *
 from .zwave_constants_interpretation import *
@@ -22,24 +20,24 @@ class ZwaveBattery:
 
     """
 
-    def __init__(self, logger, utility, command_classes, zw_interpretation):
+    def __init__(self, exception_handler, logger, utility, command_classes, zw_interpretation):
         try:
+            self.exception_handler = exception_handler
             self.logger = logger
             self.utility = utility
             self.command_classes = command_classes
             self.zw_interpretation = zw_interpretation
 
             self.command_classes[ZW_BATTERY] = dict()
-            self.command_classes[ZW_BATTERY][ZW_IDENTIFIER] = u"Battery"
+            self.command_classes[ZW_BATTERY][ZW_IDENTIFIER] = "Battery"
             self.command_classes[ZW_BATTERY][ZW_COMMANDS] = dict()
-            self.command_classes[ZW_BATTERY][ZW_COMMANDS][ZW_BATTERY_GET] = u"Get"
-            self.command_classes[ZW_BATTERY][ZW_COMMANDS][ZW_BATTERY_REPORT] = u"Report"
-            self.command_classes[ZW_BATTERY][ZW_COMMANDS][ZW_BATTERY_HEALTH_GET] = u"Health Get Command"
-            self.command_classes[ZW_BATTERY][ZW_COMMANDS][ZW_BATTERY_HEALTH_REPORT] = u"Report Command"
+            self.command_classes[ZW_BATTERY][ZW_COMMANDS][ZW_BATTERY_GET] = "Get"
+            self.command_classes[ZW_BATTERY][ZW_COMMANDS][ZW_BATTERY_REPORT] = "Report"
+            self.command_classes[ZW_BATTERY][ZW_COMMANDS][ZW_BATTERY_HEALTH_GET] = "Health Get Command"
+            self.command_classes[ZW_BATTERY][ZW_COMMANDS][ZW_BATTERY_HEALTH_REPORT] = "Report Command"
 
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveBattery' Class, '__init__' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement
 
     def interpret(self):
         try:
@@ -57,22 +55,18 @@ class ZwaveBattery:
             error_message = self.utility.not_supported(self.zw_interpretation)
             self.zw_interpretation[ZW_ERROR_MESSAGE] = error_message
 
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveBattery' Class, 'process_class_battery' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement
 
     def _interpret_get(self):
         try:
-            self.zw_interpretation[ZW_INTERPRETATION_UI] = (u"Class: '{0} [{1}]', Command: '{2}'"
-                                                            .format(self.zw_interpretation[ZW_COMMAND_CLASS_UI],
-                                                                    self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI],
-                                                                    self.zw_interpretation[ZW_COMMAND_UI]))
+            self.zw_interpretation[ZW_INTERPRETATION_UI] = (
+                f"Class: '{self.zw_interpretation[ZW_COMMAND_CLASS_UI]} [{self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI]}]', Command: '{self.zw_interpretation[ZW_COMMAND_UI]}'")
 
             self.zw_interpretation[ZW_INTERPRETED] = True
 
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveBattery' Class, '_interpret_get' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement
 
     def _interpret_report(self):
         try:
@@ -81,17 +75,13 @@ class ZwaveBattery:
                 battery_level = 255
             self.zw_interpretation[ZW_BATTERY_LEVEL] = battery_level
             if battery_level == 255:
-                self.zw_interpretation[ZW_BATTERY_LEVEL_UI] = u"Low"
+                self.zw_interpretation[ZW_BATTERY_LEVEL_UI] = "Low"
             else:
-                self.zw_interpretation[ZW_BATTERY_LEVEL_UI] = u"{0}%".format(battery_level)
-            self.zw_interpretation[ZW_INTERPRETATION_UI] = (u"Class: '{0} [{1}]', Command: '{2}', Battery Level: {3}"
-                                                            .format(self.zw_interpretation[ZW_COMMAND_CLASS_UI],
-                                                                    self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI],
-                                                                    self.zw_interpretation[ZW_COMMAND_UI],
-                                                                    self.zw_interpretation[ZW_BATTERY_LEVEL_UI]))
+                self.zw_interpretation[ZW_BATTERY_LEVEL_UI] = f"{battery_level}%"
+            self.zw_interpretation[ZW_INTERPRETATION_UI] = (
+                f"Class: '{self.zw_interpretation[ZW_COMMAND_CLASS_UI]} [{self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI]}]', Command: '{self.zw_interpretation[ZW_COMMAND_UI]}', Battery Level: {self.zw_interpretation[ZW_BATTERY_LEVEL_UI]}")
 
             self.zw_interpretation[ZW_INTERPRETED] = True
 
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveBattery' Class, '_interpret_report' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement

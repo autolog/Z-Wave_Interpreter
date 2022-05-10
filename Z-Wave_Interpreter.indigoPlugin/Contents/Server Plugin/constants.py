@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Z-Wave Interpreter - Constants © Autolog 2020
+# Z-Wave Interpreter - Constants © Autolog 2020-2022
 #
 
 # plugin Constants
@@ -9,7 +9,7 @@
 try:
     # noinspection PyUnresolvedReferences
     import indigo
-except ImportError, e:
+except ImportError:
     pass
 
 K_ADDRESS = 1

@@ -1,10 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Z-Wave Interpreter © Autolog 2020
+# Z-Wave Interpreter © Autolog 2020-2022
 #
-
-import sys
 
 from .zwave_constants import *
 from .zwave_constants_interpretation import *
@@ -25,27 +23,27 @@ class ZwaveSwitchMultilevel:
 
     """
 
-    def __init__(self, logger, utility, command_classes, zw_interpretation):
+    def __init__(self, exception_handler, logger, utility, command_classes, zw_interpretation):
         try:
+            self.exception_handler = exception_handler
             self.logger = logger
             self.utility = utility
             self.command_classes = command_classes
             self.zw_interpretation = zw_interpretation
 
             self.command_classes[ZW_SWITCH_MULTILEVEL] = dict()
-            self.command_classes[ZW_SWITCH_MULTILEVEL][ZW_IDENTIFIER] = u"Multilevel Switch"
+            self.command_classes[ZW_SWITCH_MULTILEVEL][ZW_IDENTIFIER] = "Multilevel Switch"
             self.command_classes[ZW_SWITCH_MULTILEVEL][ZW_COMMANDS] = dict()
-            self.command_classes[ZW_SWITCH_MULTILEVEL][ZW_COMMANDS][ZW_SWITCH_MULTILEVEL_SET] = u"Set"
-            self.command_classes[ZW_SWITCH_MULTILEVEL][ZW_COMMANDS][ZW_SWITCH_MULTILEVEL_GET] = u"Get"
-            self.command_classes[ZW_SWITCH_MULTILEVEL][ZW_COMMANDS][ZW_SWITCH_MULTILEVEL_REPORT] = u"Report"
-            self.command_classes[ZW_SWITCH_MULTILEVEL][ZW_COMMANDS][ZW_SWITCH_MULTILEVEL_START_LEVEL_CHANGE] = u"Start Level Change"
-            self.command_classes[ZW_SWITCH_MULTILEVEL][ZW_COMMANDS][ZW_SWITCH_MULTILEVEL_STOP_LEVEL_CHANGE] = u"Stop Level Change"
-            self.command_classes[ZW_SWITCH_MULTILEVEL][ZW_COMMANDS][ZW_SWITCH_MULTILEVEL_SUPPORTED_GET] = u"Supported Get"
-            self.command_classes[ZW_SWITCH_MULTILEVEL][ZW_COMMANDS][ZW_SWITCH_MULTILEVEL_SUPPORTED_REPORT] = u"Supported Report"
+            self.command_classes[ZW_SWITCH_MULTILEVEL][ZW_COMMANDS][ZW_SWITCH_MULTILEVEL_SET] = "Set"
+            self.command_classes[ZW_SWITCH_MULTILEVEL][ZW_COMMANDS][ZW_SWITCH_MULTILEVEL_GET] = "Get"
+            self.command_classes[ZW_SWITCH_MULTILEVEL][ZW_COMMANDS][ZW_SWITCH_MULTILEVEL_REPORT] = "Report"
+            self.command_classes[ZW_SWITCH_MULTILEVEL][ZW_COMMANDS][ZW_SWITCH_MULTILEVEL_START_LEVEL_CHANGE] = "Start Level Change"
+            self.command_classes[ZW_SWITCH_MULTILEVEL][ZW_COMMANDS][ZW_SWITCH_MULTILEVEL_STOP_LEVEL_CHANGE] = "Stop Level Change"
+            self.command_classes[ZW_SWITCH_MULTILEVEL][ZW_COMMANDS][ZW_SWITCH_MULTILEVEL_SUPPORTED_GET] = "Supported Get"
+            self.command_classes[ZW_SWITCH_MULTILEVEL][ZW_COMMANDS][ZW_SWITCH_MULTILEVEL_SUPPORTED_REPORT] = "Supported Report"
 
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveSwitchMultilevel' Class, '__init__' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement
 
     def interpret(self):
         try:
@@ -69,34 +67,30 @@ class ZwaveSwitchMultilevel:
             error_message = self.utility.not_supported(self.zw_interpretation)
             self.zw_interpretation[ZW_ERROR_MESSAGE] = error_message
 
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveSwitchMultilevel' Class, 'interpret' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
-
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement
 
     def _interpret_get(self):
         try:
-            self.zw_interpretation[ZW_INTERPRETATION_UI] = (u"Class: '{0} [{1}]', Command: '{2}'"
+            self.zw_interpretation[ZW_INTERPRETATION_UI] = ("Class: '{0} [{1}]', Command: '{2}'"
                                                             .format(self.zw_interpretation[ZW_COMMAND_CLASS_UI],
                                                                     self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI],
                                                                     self.zw_interpretation[ZW_COMMAND_UI]))
 
             self.zw_interpretation[ZW_INTERPRETED] = True
 
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveSwitchMultilevel' Class, '_interpret_get' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
-
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement
 
     def _interpret_report(self):
         try:
-            value, value_bool, value_ui = self.utility.evaluate_value(self.zw_interpretation[ZW_COMMAND_DETAIL][0])
+            value, value_bool, value_ui = self.utility.evaluate_value(self.zw_interpretation[ZW_COMMAND_DETAIL][0])  # noqa [Duplicated code fragment!]
 
             self.zw_interpretation[ZW_VALUE] = value
             self.zw_interpretation[ZW_VALUE_BOOL] = value_bool
             self.zw_interpretation[ZW_VALUE_UI] = value_ui
 
-            self.zw_interpretation[ZW_INTERPRETATION_UI] = (u"Class: '{0} [{1}]', Command: '{2}', value: '{3}' | {4} | '{5}'"
+            self.zw_interpretation[ZW_INTERPRETATION_UI] = ("Class: '{0} [{1}]', Command: '{2}', value: '{3}' | {4} | '{5}'"
                                                             .format(self.zw_interpretation[ZW_COMMAND_CLASS_UI],
                                                                     self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI],
                                                                     self.zw_interpretation[ZW_COMMAND_UI],
@@ -106,6 +100,5 @@ class ZwaveSwitchMultilevel:
 
             self.zw_interpretation[ZW_INTERPRETED] = True
 
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveSwitchMultilevel' Class, '_interpret_report' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement

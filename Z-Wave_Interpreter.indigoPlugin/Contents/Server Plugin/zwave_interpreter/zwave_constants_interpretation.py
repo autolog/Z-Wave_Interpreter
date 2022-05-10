@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Z-Wave Interpreter - Constants © Autolog 2020
+# Z-Wave Interpreter - Constants © Autolog 2020-2022
 #
 
 # Z-Wave Interpreter common constants

@@ -1,21 +1,20 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Z-Wave Interpreter © Autolog 2020
+# Z-Wave Interpreter © Autolog 2020-2022
 #
 
 # plugin Constants
 
 try:
+    # noinspection PyUnresolvedReferences
     import indigo
-except ImportError, e:
+except ImportError:
     pass
 
-import sys
-
-from zwave_constants import *
-from zwave_constants_command_classes import *
-from zwave_constants_interpretation import *
+from .zwave_constants import *
+from .zwave_constants_command_classes import *
+from .zwave_constants_interpretation import *
 from .zwave_utility import ZwaveUtility
 from .zwave_command_class_basic import ZwaveBasicCommand
 from .zwave_command_class_thermostat_setpoint import ZwaveThermostatSetpoint
@@ -60,9 +59,9 @@ class ZwaveInterpreter:
 
     """
 
-    def __init__(self, logger, indigo_devices):
+    def __init__(self, exception_handler, logger, indigo_devices):
         try:
-
+            self.exception_handler = exception_handler
             self.logger = logger
 
             self.node_to_indigo_device = dict()
@@ -102,7 +101,7 @@ class ZwaveInterpreter:
 
                             self.node_to_indigo_device[int(dev.address)][end_point][ZW_INDIGO_DEVICE_COMMAND_CLASSES] = command_classes
 
-                # self.logger.warning(u'ZWAVE NODE TO INDIGO DEVICE:\n{0}\n'.format(self.node_to_indigo_device))
+                # self.logger.warning(f'ZWAVE NODE TO INDIGO DEVICE:\n{self.node_to_indigo_device}\n')
 
             self.zw_received_sent = False
             self.zw_interpretation = dict()
@@ -114,50 +113,48 @@ class ZwaveInterpreter:
 
             self.zw_command_classes = dict()
 
-            self.utility = ZwaveUtility(self.logger, self.zw_command_classes, self.zw_interpretation)
-            self.zwave_basic_command = ZwaveBasicCommand(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
-            self.zwave_battery = ZwaveBattery(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
-            self.zwave_central_scene = ZwaveCentralScene(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
-            self.zwave_climate_control_schedule = ZwaveClimateControlSchedule(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
-            self.zwave_meter = ZwaveMeter(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.utility = ZwaveUtility(self.exception_handler, self.logger, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_basic_command = ZwaveBasicCommand(self.exception_handler, self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_battery = ZwaveBattery(self.exception_handler, self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_central_scene = ZwaveCentralScene(self.exception_handler, self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_climate_control_schedule = ZwaveClimateControlSchedule(self.exception_handler, self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_meter = ZwaveMeter(self.exception_handler, self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
             self.zwave_multi_channel = ZwaveMultiChannel(self)
-            self.zwave_notification = ZwaveNotification(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
-            self.zwave_sensor_alarm = ZwaveSensorAlarm(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
-            self.zwave_sensor_binary = ZwaveSensorBinary(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_notification = ZwaveNotification(self.exception_handler, self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_sensor_alarm = ZwaveSensorAlarm(self.exception_handler, self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_sensor_binary = ZwaveSensorBinary(self.exception_handler, self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
             self.zwave_sensor_multilevel = ZwaveSensorMultilevel(self)
-            self.zwave_switch_binary = ZwaveSwitchBinary(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
-            self.zwave_switch_multilevel = ZwaveSwitchMultilevel(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
-            self.zwave_thermostat_mode = ZwaveThermostatMode(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
-            self.zwave_thermostat_fan_mode = ZwaveThermostatFanMode(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
-            self.zwave_thermostat_fan_state = ZwaveThermostatFanState(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
-            self.zwave_thermostat_operating_state = ZwaveThermostatOperatingState(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
-            self.zwave_thermostat_setpoint = ZwaveThermostatSetpoint(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
-            self.zwave_wake_up = ZwaveWakeUp(self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_switch_binary = ZwaveSwitchBinary(self.exception_handler, self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_switch_multilevel = ZwaveSwitchMultilevel(self.exception_handler, self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_thermostat_mode = ZwaveThermostatMode(self.exception_handler, self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_thermostat_fan_mode = ZwaveThermostatFanMode(self.exception_handler, self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_thermostat_fan_state = ZwaveThermostatFanState(self.exception_handler, self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_thermostat_operating_state = ZwaveThermostatOperatingState(self.exception_handler, self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_thermostat_setpoint = ZwaveThermostatSetpoint(self.exception_handler, self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
+            self.zwave_wake_up = ZwaveWakeUp(self.exception_handler, self.logger, self.utility, self.zw_command_classes, self.zw_interpretation)
 
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveInterpreter' Class, '__init__' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement
 
     def link_node_to_indigo_device(self):
         try:
             node = self.zw_interpretation[ZW_NODE_ID]
             end_point = self.zw_interpretation[ZW_ENDPOINT]
             self.device_id = 0
-            self.device_name = u"unknown Indigo device"
+            self.device_name = "unknown Indigo device"
             if end_point is None:
                 end_point = 0
             if node is not None:
-                self.device_name = u"{0} {1} Unknown Indigo device".format(node, end_point)
+                self.device_name = f"{node} {end_point} Unknown Indigo device"
                 if node in self.node_to_indigo_device:
                     if end_point in self.node_to_indigo_device[node]:
-                        self.device_name = u"{0}".format(self.node_to_indigo_device[node][end_point][ZW_INDIGO_DEVICE_NAME])
+                        self.device_name = f"{self.node_to_indigo_device[node][end_point][ZW_INDIGO_DEVICE_NAME]}"
                         self.device_id = self.node_to_indigo_device[node][end_point][ZW_INDIGO_DEVICE_ID]
                         if end_point == 0:
                             self.device_command_classes = self.node_to_indigo_device[node][end_point][ZW_INDIGO_DEVICE_COMMAND_CLASSES]
 
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveInterpreter' Class, 'link_node_to_indigo_device' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement
 
     def interpret_list(self, all_devices, device_list=None):
         try:
@@ -170,9 +167,8 @@ class ZwaveInterpreter:
                     for device_id in device_list:
                         self.interpret_devices_list.append(device_id)
 
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveInterpreter' Class, 'interpret_list' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement
 
     def interpret_zwave(self, zwave_received, zwave_command):
             
@@ -192,17 +188,17 @@ class ZwaveInterpreter:
 
             # TODO: REMOVE DEBUG vvvv
             # if zwave_command['nodeId'] == 2 or zwave_command['nodeId'] == 72:
-            #     self.logger.warning(u"\n\nInterpreting Z-Wave Command. {0}: {1}".format(self.zw_received_sent[0], zwave_command))
+            #     self.logger.warning(f"\n\nInterpreting Z-Wave Command. {self.zw_received_sent[0]}: {zwave_command}")
             # TODO: REMOVE DEBUG ^^^^
 
             self.zw_interpretation[ZW_INTERPRETATION_ATTEMPTED] = False
             self.zw_interpretation[ZW_INTERPRETED] = False
             self.zw_interpretation[ZW_COMMAND_BYTES] = list()
-            self.zw_interpretation[ZW_COMMAND_BYTES_UI] = u"[ "
+            self.zw_interpretation[ZW_COMMAND_BYTES_UI] = "[ "
             for item in zwave_command["bytes"]:
                 self.zw_interpretation[ZW_COMMAND_BYTES].append(item)
-                self.zw_interpretation[ZW_COMMAND_BYTES_UI] = u"{0}{1} ".format(self.zw_interpretation[ZW_COMMAND_BYTES_UI], "%0.2X" % item)
-            self.zw_interpretation[ZW_COMMAND_BYTES_UI] = u"{0}]".format(self.zw_interpretation[ZW_COMMAND_BYTES_UI])
+                self.zw_interpretation[ZW_COMMAND_BYTES_UI] = f"{self.zw_interpretation[ZW_COMMAND_BYTES_UI]}{'%0.2X' % item} "
+            self.zw_interpretation[ZW_COMMAND_BYTES_UI] = f"{self.zw_interpretation[ZW_COMMAND_BYTES_UI]}]"
             self.zw_interpretation[ZW_ERROR_MESSAGE] = ""
             self.zw_interpretation[ZW_NODE_ID] = zwave_command['nodeId']  # Can be None!
             self.zw_interpretation[ZW_ENDPOINT] = zwave_command['endpoint']  # Often will be None!
@@ -225,25 +221,25 @@ class ZwaveInterpreter:
 
                 if self.zw_interpretation[ZW_COMMAND_CLASS] in self.device_command_classes:
                     self.zw_interpretation[ZW_COMMAND_CLASS_VERSION] = self.device_command_classes[self.zw_interpretation[ZW_COMMAND_CLASS]]
-                    self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI] = u"v{0}".format(self.zw_interpretation[ZW_COMMAND_CLASS_VERSION])
+                    self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI] = f"v{self.zw_interpretation[ZW_COMMAND_CLASS_VERSION]}"
                 else:
                     # Unable to determine version number
-                    self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI] = u"Version Indeterminate"
+                    self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI] = "Version Indeterminate"
                     self.zw_interpretation[ZW_COMMAND_CLASS_VERSION] = 0
 
                 if self.zw_interpretation[ZW_COMMAND_CLASS_VERSION] == 0:
-                    self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI] = u"Version unknown"
+                    self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI] = "Version unknown"
                 else:
-                    self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI] = u"v{0}".format(self.zw_interpretation[ZW_COMMAND_CLASS_VERSION])
+                    self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI] = f"v{self.zw_interpretation[ZW_COMMAND_CLASS_VERSION]}"
 
                     # SPECIAL FIX FOR COMMAND CLASS 0x71
                     if self.zw_interpretation[ZW_COMMAND_CLASS] == ZW_NOTIFICATION:  # Could be " Command Class Alarm"
                         if self.zw_interpretation[ZW_COMMAND_PACKET_LENGTH] < 9:  # If Command Packet Length 9 or greater, assume Version 3-8
                             if (self.zw_interpretation[ZW_COMMAND_CLASS_VERSION] == 1) or (self.zw_interpretation[ZW_COMMAND_CLASS_VERSION] == 2):
-                                self.zw_interpretation[ZW_COMMAND_CLASS_UI] = u"Alarm"  # Override Command Class name if version 1 or 2, otherwise leave as "Notification"
+                                self.zw_interpretation[ZW_COMMAND_CLASS_UI] = "Alarm"  # Override Command Class name if version 1 or 2, otherwise leave as "Notification"
                         else:
                             self.zw_interpretation[ZW_COMMAND_CLASS_VERSION] = 8
-                            self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI] = u"v8 ?"  # Reset to V8 but indicate questionable
+                            self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI] = "v8 ?"  # Reset to V8 but indicate questionable
                     # END SPECIAL FIX FOR COMMAND CLASS 0x71
 
                 if self.zw_interpretation[ZW_COMMAND] in self.zw_command_classes[self.zw_interpretation[ZW_COMMAND_CLASS]][ZW_COMMANDS]:
@@ -306,27 +302,22 @@ class ZwaveInterpreter:
                         self.zwave_central_scene.interpret()
 
                     else:
-                        self.zw_interpretation[ZW_ERROR_MESSAGE] = (u"Logic not programmed for Z-Wave Command: '{0}' and Z-Wave Command Class: '{1} [v{2}]'"
-                                                                    .format(self.zw_interpretation[ZW_COMMAND_CLASS_UI],
-                                                                            self.zw_interpretation[ZW_COMMAND_UI],
-                                                                            self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI]))
+                        self.zw_interpretation[ZW_ERROR_MESSAGE] = (
+                            f"Logic not programmed for Z-Wave Command: '{self.zw_interpretation[ZW_COMMAND_CLASS_UI]}' and Z-Wave Command Class: '{self.zw_interpretation[ZW_COMMAND_UI]} [v{self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI]}]'")
                 else:
                     # Z-Wave Command not known for Z-Wave Command Class
-                    self.zw_interpretation[ZW_ERROR_MESSAGE] = (u"Logic not programmed for Z-Wave Command: '{0} [{1}]' and Z-Wave Command Class: '{2} [v{3}]'"
-                                                                .format(self.zw_interpretation[ZW_COMMAND],
-                                                                        hex(self.zw_interpretation[ZW_COMMAND]),
-                                                                        self.zw_interpretation[ZW_COMMAND_CLASS_UI],
-                                                                        self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI]))
+                    self.zw_interpretation[ZW_ERROR_MESSAGE] = (
+                        f"Logic not programmed for Z-Wave Command: '{self.zw_interpretation[ZW_COMMAND]} [{hex(self.zw_interpretation[ZW_COMMAND])}]' and Z-Wave Command Class: '{self.zw_interpretation[ZW_COMMAND_CLASS_UI]} [v{self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI]}]'")
             else:
                 # Z-Wave Command Class and command not known for Z-Wave Command Class
-                self.zw_interpretation[ZW_ERROR_MESSAGE] = (u"Logic not programmed for Z-Wave Command Class: '{0} [{1}]'"
-                                                            .format(self.zw_interpretation[ZW_COMMAND_CLASS], hex(self.zw_interpretation[ZW_COMMAND_CLASS])))
+                self.zw_interpretation[ZW_ERROR_MESSAGE] = (
+                    f"Logic not programmed for Z-Wave Command Class: '{self.zw_interpretation[ZW_COMMAND_CLASS]} [{hex(self.zw_interpretation[ZW_COMMAND_CLASS])}]'")
 
             interpreted_device_name = self.device_name
 
             # Setup Node & Endpoint for interpretation output
             if self.zw_interpretation[ZW_NODE_ID] is None:
-                node_endpoint = u""
+                node_endpoint = ""
             else:
                 if self.zw_interpretation[ZW_ENDPOINT] is None or self.zw_interpretation[ZW_ENDPOINT] == 0:
                     if self.device_id != 0:
@@ -337,34 +328,23 @@ class ZwaveInterpreter:
                                     interpreted_device_name = value[1]
                                     break
 
-                    node_endpoint = u" [Node: {0}]".format(self.zw_interpretation[ZW_NODE_ID])
+                    node_endpoint = f" [Node: {self.zw_interpretation[ZW_NODE_ID]}]"
                 else:
-                    node_endpoint = u" [Node: {0}, Endpoint: {1}]".format(self.zw_interpretation[ZW_NODE_ID], self.zw_interpretation[ZW_ENDPOINT])
+                    node_endpoint = f" [Node: {self.zw_interpretation[ZW_NODE_ID]}, Endpoint: {self.zw_interpretation[ZW_ENDPOINT]}]"
 
             if not zwave_received:
                 # Sent Z-Wave message log format
 
-                success = u"OK"
+                success = "OK"
                 if not self.zw_interpretation[ZW_COMMAND_SUCCESS]:
-                    success = u"FAILED"
+                    success = "FAILED"
                 time_delta = self.zw_interpretation[ZW_TIME_DELTA]
 
-                interpretation_overview = (u"{0}: '{1}', {2} ({3}ms) {4} '{5}'{6}"
-                                           .format(self.zw_received_sent[0],  # 'RECV' or 'SENT'
-                                                   success,  # "OK" | "FAILED"
-                                                   self.zw_interpretation[ZW_COMMAND_BYTES_UI],  # e.g. '[1, 9, 0, 4, 0, 102, 3, 128, 3, 47, 59]'
-                                                   time_delta,  # e.g. 500
-                                                   self.zw_received_sent[1],  # 'from' or 'to'
-                                                   interpreted_device_name,  # Indigo device name for Z-wave device being logged
-                                                   node_endpoint))
+                interpretation_overview = (
+                    f"{self.zw_received_sent[0]}: '{success}', {self.zw_interpretation[ZW_COMMAND_BYTES_UI]} ({time_delta}ms) {self.zw_received_sent[1]} '{interpreted_device_name}'{node_endpoint}")
             else:
                 # Received Z-Wave message log format
-                interpretation_overview = (u"{0}: '{1}' {2} '{3}'{4}"
-                                           .format(self.zw_received_sent[0],  # 'RECV' or 'SENT'
-                                                   self.zw_interpretation[ZW_COMMAND_BYTES_UI],  # e.g. '[1, 9, 0, 4, 0, 102, 3, 128, 3, 47, 59]'
-                                                   self.zw_received_sent[1],  # 'from' or 'to'
-                                                   interpreted_device_name,  # Indigo device name for Z-wave device being logged
-                                                   node_endpoint))
+                interpretation_overview = (f"{self.zw_received_sent[0]}: '{self.zw_interpretation[ZW_COMMAND_BYTES_UI]}' {self.zw_received_sent[1]} '{interpreted_device_name}'{node_endpoint}")
 
             self.zw_interpretation[ZW_INTERPRETATION_OVERVIEW_UI] = interpretation_overview
             if self.zw_interpretation[ZW_INTERPRETED]:
@@ -376,21 +356,20 @@ class ZwaveInterpreter:
                         if self.zw_interpretation[ZW_COMMAND_DETAIL][2] == ZW_SENSOR_MULTILEVEL:
                             zw_encapsulated_command = self.zw_interpretation[ZW_COMMAND_DETAIL][3]
                             zw_encapsulated_command_detail = self.zw_interpretation[ZW_COMMAND_DETAIL][4:]
-                            zw_interpretation_detail_ui = u"{0}\n  Encapsulated: ".format(self.zw_interpretation[ZW_INTERPRETATION_UI])
+                            zw_interpretation_detail_ui = f"{self.zw_interpretation[ZW_INTERPRETATION_UI]}\n  Encapsulated: "
                             self.zw_interpretation[ZW_COMMAND_CLASS_UI] = self.zw_command_classes[ZW_SENSOR_MULTILEVEL][ZW_IDENTIFIER]
                             self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI] = "n/a"
                             self.zw_interpretation[ZW_COMMAND_UI] = self.zw_command_classes[ZW_SENSOR_MULTILEVEL][ZW_COMMANDS][zw_encapsulated_command]
                             self.zwave_sensor_multilevel.interpret(zw_encapsulated_command, zw_encapsulated_command_detail)
                             if self.zw_interpretation[ZW_INTERPRETED]:
-                                self.zw_interpretation[ZW_INTERPRETATION_DETAIL_UI] = u"{0}{1}".format(zw_interpretation_detail_ui, self.zw_interpretation[ZW_INTERPRETATION_UI])
+                                self.zw_interpretation[ZW_INTERPRETATION_DETAIL_UI] = f"{zw_interpretation_detail_ui}{self.zw_interpretation[ZW_INTERPRETATION_UI]}"
                             else:
-                                self.zw_interpretation[ZW_INTERPRETATION_DETAIL_UI] = u"{0}Unable to interpret encapsulated command".format(zw_interpretation_detail_ui)
+                                self.zw_interpretation[ZW_INTERPRETATION_DETAIL_UI] = f"{zw_interpretation_detail_ui}Unable to interpret encapsulated command"
                                 self.zw_interpretation[ZW_INTERPRETED] = True
             else:
                 self.zw_interpretation[ZW_INTERPRETATION_DETAIL_UI] = self.zw_interpretation[ZW_ERROR_MESSAGE]
 
             return self.zw_interpretation
 
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveInterpreter' Class, 'interpret_zwave' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message,))
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement

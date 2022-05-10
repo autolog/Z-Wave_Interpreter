@@ -1,10 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Z-Wave Interpreter © Autolog 2020
+# Z-Wave Interpreter © Autolog 2020-2022
 #
-
-import sys
 
 from .zwave_constants import *
 from .zwave_constants_interpretation import *
@@ -25,27 +23,27 @@ class ZwaveWakeUp:
 
     """
 
-    def __init__(self, logger, utility, command_classes, zw_interpretation):
+    def __init__(self, exception_handler, logger, utility, command_classes, zw_interpretation):
         try:
+            self.exception_handler = exception_handler
             self.logger = logger
             self.utility = utility
             self.command_classes = command_classes
             self.zw_interpretation = zw_interpretation
 
             self.command_classes[ZW_WAKE_UP] = dict()
-            self.command_classes[ZW_WAKE_UP][ZW_IDENTIFIER] = u"Wakeup"
+            self.command_classes[ZW_WAKE_UP][ZW_IDENTIFIER] = "Wakeup"
             self.command_classes[ZW_WAKE_UP][ZW_COMMANDS] = dict()
-            self.command_classes[ZW_WAKE_UP][ZW_COMMANDS][ZW_WAKE_UP_INTERVAL_SET] = u"Interval Set"
-            self.command_classes[ZW_WAKE_UP][ZW_COMMANDS][ZW_WAKE_UP_INTERVAL_GET] = u"Interval Get"
-            self.command_classes[ZW_WAKE_UP][ZW_COMMANDS][ZW_WAKE_UP_INTERVAL_REPORT] = u"Interval Report"
-            self.command_classes[ZW_WAKE_UP][ZW_COMMANDS][ZW_WAKE_UP_NOTIFICATION] = u"Notification"
-            self.command_classes[ZW_WAKE_UP][ZW_COMMANDS][ZW_WAKE_UP_NO_MORE_INFORMATION] = u"No More Information"
-            self.command_classes[ZW_WAKE_UP][ZW_COMMANDS][ZW_WAKE_UP_INTERVAL_CAPABILITIES_GET] = u"Interval Capabilities Get"
-            self.command_classes[ZW_WAKE_UP][ZW_COMMANDS][ZW_WAKE_UP_INTERVAL_CAPABILITIES_REPORT] = u"Interval Capabilities Report"
+            self.command_classes[ZW_WAKE_UP][ZW_COMMANDS][ZW_WAKE_UP_INTERVAL_SET] = "Interval Set"
+            self.command_classes[ZW_WAKE_UP][ZW_COMMANDS][ZW_WAKE_UP_INTERVAL_GET] = "Interval Get"
+            self.command_classes[ZW_WAKE_UP][ZW_COMMANDS][ZW_WAKE_UP_INTERVAL_REPORT] = "Interval Report"
+            self.command_classes[ZW_WAKE_UP][ZW_COMMANDS][ZW_WAKE_UP_NOTIFICATION] = "Notification"
+            self.command_classes[ZW_WAKE_UP][ZW_COMMANDS][ZW_WAKE_UP_NO_MORE_INFORMATION] = "No More Information"
+            self.command_classes[ZW_WAKE_UP][ZW_COMMANDS][ZW_WAKE_UP_INTERVAL_CAPABILITIES_GET] = "Interval Capabilities Get"
+            self.command_classes[ZW_WAKE_UP][ZW_COMMANDS][ZW_WAKE_UP_INTERVAL_CAPABILITIES_REPORT] = "Interval Capabilities Report"
 
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveWakeUp' Class, '__init__' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement
 
     def interpret(self):
         try:
@@ -69,32 +67,25 @@ class ZwaveWakeUp:
             error_message = self.utility.not_supported(self.zw_interpretation)
             self.zw_interpretation[ZW_ERROR_MESSAGE] = error_message
 
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveWakeUp' Class, 'process_class_wake_up' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement
 
     def _interpret_wake_up_no_more_information(self):
         try:
-            self.zw_interpretation[ZW_INTERPRETATION_UI] = (u"Class: '{0} [{1}]', Command: '{2}'"
-                                                            .format(self.zw_interpretation[ZW_COMMAND_CLASS_UI],
-                                                                    self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI],
-                                                                    self.zw_interpretation[ZW_COMMAND_UI]))
+            self.zw_interpretation[ZW_INTERPRETATION_UI] = (
+                f"Class: '{self.zw_interpretation[ZW_COMMAND_CLASS_UI]} [{self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI]}]', Command: '{self.zw_interpretation[ZW_COMMAND_UI]}'")
 
             self.zw_interpretation[ZW_INTERPRETED] = True
 
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveWakeUp' Class, '_interpret_wake_up_no_more_information' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement
 
     def _interpret_wake_up_notification(self):
         try:
-            self.zw_interpretation[ZW_INTERPRETATION_UI] = (u"Class: '{0} [{1}]', Command: '{2}'"
-                                                            .format(self.zw_interpretation[ZW_COMMAND_CLASS_UI],
-                                                                    self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI],
-                                                                    self.zw_interpretation[ZW_COMMAND_UI]))
+            self.zw_interpretation[ZW_INTERPRETATION_UI] = (
+                f"Class: '{self.zw_interpretation[ZW_COMMAND_CLASS_UI]} [{self.zw_interpretation[ZW_COMMAND_CLASS_VERSION_UI]}]', Command: '{self.zw_interpretation[ZW_COMMAND_UI]}'")
 
             self.zw_interpretation[ZW_INTERPRETED] = True
 
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveWakeUp' Class, '_interpret_wake_up_notification' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement

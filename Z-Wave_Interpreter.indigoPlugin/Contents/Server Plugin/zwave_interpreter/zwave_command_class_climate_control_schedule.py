@@ -1,10 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Z-Wave Interpreter © Autolog 2020
+# Z-Wave Interpreter © Autolog 2020-2022
 #
-
-import sys
 
 from .zwave_constants import *
 from .zwave_constants_interpretation import *
@@ -26,34 +24,32 @@ class ZwaveClimateControlSchedule:
 
     """
 
-    def __init__(self, logger, utility, command_classes, zw_interpretation):
+    def __init__(self, exception_handler, logger, utility, command_classes, zw_interpretation):
         try:
-            self.logger = logger
+            self.exception_handler = exception_handler
             self.utility = utility
             self.command_classes = command_classes
             self.zw_interpretation = zw_interpretation
 
             self.command_classes[ZW_CLIMATE_CONTROL_SCHEDULE] = dict()
-            self.command_classes[ZW_CLIMATE_CONTROL_SCHEDULE][ZW_IDENTIFIER] = u"Climate Control Schedule"
+            self.command_classes[ZW_CLIMATE_CONTROL_SCHEDULE][ZW_IDENTIFIER] = "Climate Control Schedule"
             self.command_classes[ZW_CLIMATE_CONTROL_SCHEDULE][ZW_COMMANDS] = dict()
-            self.command_classes[ZW_CLIMATE_CONTROL_SCHEDULE][ZW_COMMANDS][ZW_CLIMATE_CONTROL_SCHEDULE_SET] = u"Set"
-            self.command_classes[ZW_CLIMATE_CONTROL_SCHEDULE][ZW_COMMANDS][ZW_CLIMATE_CONTROL_SCHEDULE_GET] = u"Get"
-            self.command_classes[ZW_CLIMATE_CONTROL_SCHEDULE][ZW_COMMANDS][ZW_CLIMATE_CONTROL_SCHEDULE_REPORT] = u"Report"
-            self.command_classes[ZW_CLIMATE_CONTROL_SCHEDULE][ZW_COMMANDS][ZW_CLIMATE_CONTROL_SCHEDULE_CHANGED_GET] = u"Changed Get"
-            self.command_classes[ZW_CLIMATE_CONTROL_SCHEDULE][ZW_COMMANDS][ZW_CLIMATE_CONTROL_SCHEDULE_CHANGED_REPORT] = u"Changed Report"
-            self.command_classes[ZW_CLIMATE_CONTROL_SCHEDULE][ZW_COMMANDS][ZW_CLIMATE_CONTROL_SCHEDULE_OVERRIDE_SET] = u"Override Set"
-            self.command_classes[ZW_CLIMATE_CONTROL_SCHEDULE][ZW_COMMANDS][ZW_CLIMATE_CONTROL_SCHEDULE_OVERRIDE_GET] = u"Override Get"
-            self.command_classes[ZW_CLIMATE_CONTROL_SCHEDULE][ZW_COMMANDS][ZW_CLIMATE_CONTROL_SCHEDULE_OVERRIDE_REPORT] = u"Override Report"
+            self.command_classes[ZW_CLIMATE_CONTROL_SCHEDULE][ZW_COMMANDS][ZW_CLIMATE_CONTROL_SCHEDULE_SET] = "Set"
+            self.command_classes[ZW_CLIMATE_CONTROL_SCHEDULE][ZW_COMMANDS][ZW_CLIMATE_CONTROL_SCHEDULE_GET] = "Get"
+            self.command_classes[ZW_CLIMATE_CONTROL_SCHEDULE][ZW_COMMANDS][ZW_CLIMATE_CONTROL_SCHEDULE_REPORT] = "Report"
+            self.command_classes[ZW_CLIMATE_CONTROL_SCHEDULE][ZW_COMMANDS][ZW_CLIMATE_CONTROL_SCHEDULE_CHANGED_GET] = "Changed Get"
+            self.command_classes[ZW_CLIMATE_CONTROL_SCHEDULE][ZW_COMMANDS][ZW_CLIMATE_CONTROL_SCHEDULE_CHANGED_REPORT] = "Changed Report"
+            self.command_classes[ZW_CLIMATE_CONTROL_SCHEDULE][ZW_COMMANDS][ZW_CLIMATE_CONTROL_SCHEDULE_OVERRIDE_SET] = "Override Set"
+            self.command_classes[ZW_CLIMATE_CONTROL_SCHEDULE][ZW_COMMANDS][ZW_CLIMATE_CONTROL_SCHEDULE_OVERRIDE_GET] = "Override Get"
+            self.command_classes[ZW_CLIMATE_CONTROL_SCHEDULE][ZW_COMMANDS][ZW_CLIMATE_CONTROL_SCHEDULE_OVERRIDE_REPORT] = "Override Report"
 
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveClimateControlSchedule' Class, '__init__' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement
 
     def interpret(self):
         try:
             error_message = self.utility.not_supported(self.zw_interpretation)
             self.zw_interpretation[ZW_ERROR_MESSAGE] = error_message
 
-        except StandardError as standard_error_message:
-            result_message = u"Error detected in 'ZwaveClimateControlSchedule' Class, 'interpret' method"
-            self.logger.error(u"{0}: Line {1} has error '{2}'".format(result_message, sys.exc_traceback.tb_lineno, standard_error_message))
+        except Exception as exception_error:
+            self.exception_handler(exception_error, True)  # Log error and display failing statement

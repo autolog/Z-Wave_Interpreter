@@ -5,7 +5,7 @@
         <Label>This Plugin interprets Z-Wave messages sent and received by Indigo. 😄</Label>
     </Field>
     <Field id="copyright" type="label">
-        <Label>Copyright © 2021 Autolog</Label>
+        <Label>Copyright © 2021-2022 Autolog</Label>
     </Field>
 
 	<Field id="space_1" type="label" alwaysUseInDialogHeightCalc="true"><Label/></Field>
